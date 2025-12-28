@@ -3,267 +3,377 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>The Money Lab — Earn, Save, Invest (Teen Finance Game)</title>
+  <title>The Money Lab — Flash Card Finance Game</title>
   <style>
-    :root { --bg:#0b1020; --card:#141b34; --muted:#a8b1d6; --text:#eef1ff; --accent:#7aa2ff; --good:#5ee6a8; --bad:#ff6b7a; --warn:#ffd36a; }
-    * { box-sizing:border-box; }
-    body {
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    :root{
+      --bg:#070a16;
+      --panel:#101834;
+      --panel2:#0c1228;
+      --text:#eef1ff;
+      --muted:#aab3da;
+      --line:rgba(255,255,255,.10);
+      --accent:#7aa2ff;
+      --good:#5ee6a8;
+      --bad:#ff6b7a;
+      --warn:#ffd36a;
+      --shadow: 0 12px 40px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       background: radial-gradient(1200px 900px at 20% 10%, #1a2453 0%, var(--bg) 55%);
-      color: var(--text);
+      color:var(--text);
     }
-    header {
-      padding: 18px 18px 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      position: sticky; top:0;
-      background: rgba(11,16,32,0.85);
-      backdrop-filter: blur(10px);
-      z-index: 10;
+    header{
+      position: sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: rgba(7,10,22,.75);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
     }
-    header h1 { margin:0; font-size: 18px; letter-spacing:0.2px; }
-    header p { margin:6px 0 0; color: var(--muted); font-size: 13px; }
-    main { max-width: 1100px; margin: 0 auto; padding: 18px; }
-    .grid { display:grid; grid-template-columns: 340px 1fr; gap: 14px; }
-    @media (max-width: 920px) { .grid { grid-template-columns: 1fr; } }
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.09);
+    header .top{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      max-width: 1100px; margin:0 auto;
+    }
+    h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+    .sub{ margin-top:4px; color:var(--muted); font-size:12px; }
+    main{ max-width:1100px; margin:0 auto; padding: 16px; }
+
+    /* HUD */
+    .hud{
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap:10px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 980px){
+      .hud{ grid-template-columns: repeat(3, 1fr); }
+    }
+    .hud .kpi{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
       border-radius: 14px;
-      padding: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    }
-    .card h2 { margin:0 0 10px; font-size: 15px; }
-    .muted { color: var(--muted); }
-    .row { display:flex; gap: 10px; flex-wrap: wrap; }
-    .row > * { flex: 1 1 auto; }
-    label { display:block; font-size: 12px; color: var(--muted); margin: 10px 0 6px; }
-    input, select, button, textarea {
-      width: 100%;
       padding: 10px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(0,0,0,0.18);
-      color: var(--text);
-      outline: none;
+      box-shadow: var(--shadow);
+      min-height: 62px;
     }
-    input:focus, select:focus, textarea:focus { border-color: rgba(122,162,255,0.65); box-shadow: 0 0 0 3px rgba(122,162,255,0.12); }
-    button {
+    .kpi .t{ font-size:11px; color:var(--muted); }
+    .kpi .v{ margin-top:6px; font-weight:800; letter-spacing:.2px; }
+    .good{ color: var(--good); }
+    .bad{ color: var(--bad); }
+    .warn{ color: var(--warn); }
+
+    /* Layout */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns:1fr; }
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Steps */
+    .stepbar{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-bottom: 12px;
+    }
+    .chip{
+      padding:7px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      font-size: 12px;
+      color: var(--muted);
       cursor:pointer;
-      background: linear-gradient(180deg, rgba(122,162,255,0.95), rgba(122,162,255,0.70));
-      border: 1px solid rgba(122,162,255,0.65);
-      font-weight: 650;
+      user-select:none;
     }
-    button.secondary {
-      background: rgba(255,255,255,0.06);
-      border-color: rgba(255,255,255,0.14);
+    .chip.active{
+      border-color: rgba(122,162,255,.65);
+      background: rgba(122,162,255,.14);
+      color: var(--text);
+      font-weight: 700;
     }
-    button.danger { background: linear-gradient(180deg, rgba(255,107,122,0.95), rgba(255,107,122,0.70)); border-color: rgba(255,107,122,0.65); }
-    button:disabled { opacity: 0.55; cursor:not-allowed; }
-    .kpi {
-      display:grid; grid-template-columns: 1fr 1fr; gap: 10px;
+
+    /* Cards */
+    .card{
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      padding: 14px;
     }
-    .pill {
-      padding: 10px; border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-      min-height: 60px;
+    .card h2{
+      margin:0 0 8px;
+      font-size: 15px;
     }
-    .pill .t { font-size: 12px; color: var(--muted); }
-    .pill .v { font-size: 16px; margin-top: 6px; font-weight: 700; }
-    .good { color: var(--good); }
-    .bad { color: var(--bad); }
-    .warn { color: var(--warn); }
-    .log {
+    .muted{ color: var(--muted); }
+
+    /* Buttons */
+    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    button{
+      border-radius: 14px;
+      border:1px solid rgba(122,162,255,.65);
+      background: linear-gradient(180deg, rgba(122,162,255,.95), rgba(122,162,255,.70));
+      color: var(--text);
+      padding: 11px 12px;
+      font-weight: 800;
+      cursor:pointer;
+      width:100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    }
+    button.secondary{
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      font-weight: 700;
+    }
+    button.danger{
+      border-color: rgba(255,107,122,.65);
+      background: linear-gradient(180deg, rgba(255,107,122,.95), rgba(255,107,122,.70));
+    }
+    button:disabled{ opacity:.55; cursor:not-allowed; }
+
+    .btnRow .half{ flex:1 1 220px; }
+    .btnRow .third{ flex:1 1 160px; }
+
+    /* Inputs */
+    label{ display:block; margin: 10px 0 6px; color: var(--muted); font-size: 12px; }
+    select, input[type="number"], input[type="text"]{
+      width:100%;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      outline:none;
+    }
+    input:focus, select:focus{
+      border-color: rgba(122,162,255,.65);
+      box-shadow: 0 0 0 3px rgba(122,162,255,.12);
+    }
+
+    .rangeWrap{
+      display:grid;
+      grid-template-columns: 1fr 110px;
+      gap:10px;
+      align-items:center;
+      margin-top: 6px;
+    }
+    input[type="range"]{ width:100%; }
+
+    .mini{
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.20);
+    }
+
+    /* Flash card flip */
+    .flipWrap{
+      perspective: 1200px;
+      margin-top: 10px;
+    }
+    .flip{
+      position: relative;
+      width:100%;
+      min-height: 220px;
+      transform-style: preserve-3d;
+      transition: transform .65s cubic-bezier(.2,.75,.2,1);
+      border-radius: var(--radius);
+    }
+    .flip.revealed{ transform: rotateY(180deg); }
+    .face{
+      position:absolute; inset:0;
+      backface-visibility: hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.18));
+      padding: 14px;
+      display:flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+    }
+    .back{
+      transform: rotateY(180deg);
+      background: linear-gradient(180deg, rgba(122,162,255,.18), rgba(0,0,0,.18));
+    }
+    .bigTitle{ font-size: 18px; font-weight: 900; margin: 0 0 6px; }
+    .bigBody{ color: var(--muted); line-height: 1.4; }
+    .stamp{
+      align-self:flex-start;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    /* Log */
+    .log{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
       line-height: 1.35;
       white-space: pre-wrap;
-      background: rgba(0,0,0,0.22);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 12px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid var(--line);
+      border-radius: 14px;
       padding: 10px;
       max-height: 420px;
-      overflow: auto;
+      overflow:auto;
     }
-    .hr { height:1px; background: rgba(255,255,255,0.10); margin: 12px 0; }
-    .small { font-size: 12px; }
-    .tag {
-      display:inline-block; padding: 3px 8px; border-radius: 999px;
-      background: rgba(122,162,255,0.15); border:1px solid rgba(122,162,255,0.25);
-      color: var(--text); font-size: 11px; margin-left: 6px;
+
+    .hr{ height:1px; background: var(--line); margin: 12px 0; }
+
+    /* Small helper badges */
+    .badge{
+      display:inline-block;
+      margin-left:8px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border:1px solid rgba(122,162,255,.35);
+      background: rgba(122,162,255,.12);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 800;
     }
-    .table {
-      width:100%; border-collapse: collapse; font-size: 12px;
-      border-radius: 12px; overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.10);
-    }
-    .table th, .table td {
-      padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08);
-      vertical-align: top;
-    }
-    .table th { text-align:left; color: var(--muted); background: rgba(0,0,0,0.18); }
-    .table tr:last-child td { border-bottom: none; }
-    footer { padding: 14px 18px; color: var(--muted); font-size: 12px; text-align:center; }
-    .note { color: var(--muted); font-size: 12px; }
   </style>
 </head>
 
 <body>
 <header>
-  <h1>The Money Lab <span class="tag">Prototype App</span></h1>
-  <p>Simulate ages 16–25. Choose income, budget, save, invest, handle shocks, and track net worth.</p>
+  <div class="top">
+    <div>
+      <h1>The Money Lab <span class="badge">Flash Card Game UI</span></h1>
+      <div class="sub">Play one year at a time (Age 16 → 25). Earn, budget, grow money, draw events.</div>
+    </div>
+    <div style="width:260px; max-width:45vw;">
+      <input id="playerName" type="text" placeholder="Player name" value="Player 1" />
+      <div class="sub" style="margin-top:6px;">Seed (optional): <input id="seed" type="text" placeholder="e.g., 2026" style="margin-top:6px;" /></div>
+    </div>
+  </div>
 </header>
 
 <main>
+  <section class="hud" aria-label="HUD">
+    <div class="kpi"><div class="t">Age</div><div class="v" id="kAge">—</div></div>
+    <div class="kpi"><div class="t">Knowledge (1–5)</div><div class="v" id="kKnow">—</div></div>
+    <div class="kpi"><div class="t">Cash</div><div class="v" id="kCash">—</div></div>
+    <div class="kpi"><div class="t">Savings</div><div class="v" id="kSave">—</div></div>
+    <div class="kpi"><div class="t">Investments</div><div class="v" id="kInv">—</div></div>
+    <div class="kpi"><div class="t">Debt / Net Worth</div><div class="v" id="kDebtNW">—</div></div>
+  </section>
+
   <div class="grid">
-    <section class="card" aria-label="Player and controls">
-      <h2>Player Setup</h2>
-      <div class="row">
-        <div>
-          <label for="playerName">Name</label>
-          <input id="playerName" value="Player 1" />
-        </div>
-        <div>
-          <label for="seed">Random Seed (optional)</label>
-          <input id="seed" placeholder="e.g., 2026" />
-        </div>
+    <!-- GAME PANEL -->
+    <section class="panel" aria-label="Game panel">
+      <div class="stepbar" id="stepbar"></div>
+
+      <!-- STEP CONTENT -->
+      <div class="card" id="stepCard">
+        <!-- injected -->
+      </div>
+
+      <div class="btnRow">
+        <button class="secondary half" id="btnBack">Back</button>
+        <button class="half" id="btnNext">Next</button>
+      </div>
+
+      <div class="btnRow">
+        <button class="secondary third" id="btnUpgrade">Upgrade Knowledge ($500)</button>
+        <button class="secondary third" id="btnSaveGame">Save</button>
+        <button class="secondary third" id="btnLoadGame">Load</button>
+        <button class="danger third" id="btnReset">Reset</button>
       </div>
 
       <div class="hr"></div>
-
-      <h2>Status</h2>
-      <div class="kpi">
-        <div class="pill">
-          <div class="t">Age</div>
-          <div class="v" id="ageKpi">—</div>
-        </div>
-        <div class="pill">
-          <div class="t">Knowledge (1–5)</div>
-          <div class="v" id="knowledgeKpi">—</div>
-        </div>
-        <div class="pill">
-          <div class="t">Cash</div>
-          <div class="v" id="cashKpi">—</div>
-        </div>
-        <div class="pill">
-          <div class="t">Savings</div>
-          <div class="v" id="savingsKpi">—</div>
-        </div>
-        <div class="pill">
-          <div class="t">Investments</div>
-          <div class="v" id="investKpi">—</div>
-        </div>
-        <div class="pill">
-          <div class="t">Debt</div>
-          <div class="v" id="debtKpi">—</div>
-        </div>
-        <div class="pill">
-          <div class="t">Net Worth</div>
-          <div class="v" id="netWorthKpi">—</div>
-        </div>
-        <div class="pill">
-          <div class="t">Round</div>
-          <div class="v" id="roundKpi">—</div>
-        </div>
+      <div class="muted small">
+        Core rules enforced: <strong>10% tax</strong>, <strong>$4,000 living costs</strong>, and minimum <strong>10% of net-after-fixed</strong> goes to <strong>saving + investing</strong> (when positive).
       </div>
-
-      <div class="hr"></div>
-
-      <h2>Round Decisions</h2>
-
-      <label for="incomePath">1) Choose income path</label>
-      <select id="incomePath"></select>
-
-      <label for="spend">2) Spending ($)</label>
-      <input id="spend" type="number" min="0" step="1" value="0" />
-
-      <div class="row">
-        <div>
-          <label for="saveAlloc">3) Move to savings ($)</label>
-          <input id="saveAlloc" type="number" min="0" step="1" value="0" />
-        </div>
-        <div>
-          <label for="investAlloc">4) Invest ($)</label>
-          <input id="investAlloc" type="number" min="0" step="1" value="0" />
-        </div>
-      </div>
-
-      <label for="investType">Investment type</label>
-      <select id="investType"></select>
-
-      <div class="row" style="margin-top:10px;">
-        <button id="playRoundBtn">Play Year</button>
-        <button id="upgradeBtn" class="secondary">Upgrade Knowledge ($500)</button>
-      </div>
-
-      <div class="row" style="margin-top:10px;">
-        <button id="saveBtn" class="secondary">Save Game</button>
-        <button id="loadBtn" class="secondary">Load Game</button>
-        <button id="resetBtn" class="danger">Reset</button>
-      </div>
-
-      <p class="note" style="margin-top:10px;">
-        Rules enforced: 10% tax on income, $4,000 living costs yearly, and at least 10% of net income must go to saving or investing.
-      </p>
     </section>
 
-    <section class="card" aria-label="Game output">
-      <h2>Year Summary</h2>
-      <div id="summary" class="small muted">Start a new game to begin.</div>
+    <!-- JOURNAL PANEL -->
+    <section class="panel" aria-label="Journal">
+      <div class="card">
+        <h2>Year Summary</h2>
+        <div id="summary" class="muted">Start playing to see results.</div>
+      </div>
 
       <div class="hr"></div>
 
-      <h2>Ledger / Log</h2>
-      <div id="log" class="log" aria-live="polite"></div>
-
-      <div class="hr"></div>
-
-      <h2>History (Net Worth)</h2>
-      <table class="table" id="historyTable" aria-label="Net worth history table">
-        <thead>
-          <tr>
-            <th>Age</th>
-            <th>Cash</th>
-            <th>Savings</th>
-            <th>Investments</th>
-            <th>Debt</th>
-            <th>Net Worth</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="card">
+        <h2>Ledger</h2>
+        <div id="log" class="log" aria-live="polite"></div>
+      </div>
     </section>
   </div>
 </main>
 
-<footer>
-  Prototype for educational use. No external libraries. Data stored locally in your browser if you use “Save Game.”
-</footer>
-
 <script>
-/* -----------------------------
-   The Money Lab — Single File App
-   Mechanics are based on the described classroom game:
-   - Ages 16 to 25
-   - 10% tax, $4,000 living costs
-   - Savings grow at 2%/year
-   - Investment options with defined ranges
-   - Random event each year
-   - Knowledge upgrades cost $500, max 5
--------------------------------- */
+/* =========================================================
+   MONEY LAB — FLASH CARD UI (single file)
+   - Step-by-step gameplay with flip cards
+   - No external libraries
+========================================================= */
+
+/* ---------- Constants ---------- */
+const TAX_RATE = 0.10;
+const LIVING_COST = 4000;
+const SAVINGS_RATE = 0.02;
+const KNOWLEDGE_UPGRADE_COST = 500;
+const START_AGE = 16;
+const END_AGE = 25;
+const STORAGE_KEY = "moneyLabFlashSave_v1";
+
+/* ---------- Data ---------- */
+const incomePaths = [
+  { id:"part_time", name:"Part-Time Job", base:3000, variance:500, risk:"Very Low" },
+  { id:"full_time", name:"Full-Time Job", base:12000, variance:1500, risk:"Low" },
+  { id:"gig", name:"Freelance / Gig", base:9000, variance:6000, risk:"Medium" },
+  { id:"business", name:"Small Business", base:9000, variance:16000, risk:"High" }
+];
+
+const investmentTypes = [
+  { id:"bonds", name:"Bonds", minPct:2, maxPct:4, expected:3, risk:"Low" },
+  { id:"index", name:"Index Fund", minPct:-5, maxPct:12, expected:7, risk:"Medium" },
+  { id:"stock", name:"Individual Stock", minPct:-10, maxPct:15, expected:6, risk:"High" },
+  { id:"reinvest", name:"Business Reinvestment", minPct:-20, maxPct:25, expected:9, risk:"Very High" }
+];
+
+const events = [
+  { name:"Medical bill", kind:"cash", min:-1800, max:-1200 },
+  { name:"Phone breaks", kind:"cash", min:-700, max:-400 },
+  { name:"Car repair", kind:"cash", min:-1400, max:-800 },
+  { name:"Scholarship / grant", kind:"cash", min:1200, max:2500 },
+  { name:"Side hustle goes viral", kind:"cash", min:800, max:3200 },
+  { name:"Market downturn", kind:"marketPct", min:-7, max:-3 },
+  { name:"Market rally", kind:"marketPct", min:3, max:8 },
+  { name:"Promotion", kind:"incomeBoostNext", min:1500, max:3500 },
+  { name:"Unexpected fee", kind:"cash", min:-500, max:-200 }
+];
 
 /* ---------- Utilities ---------- */
 const fmt = (n) => {
   const sign = n < 0 ? "-" : "";
-  const abs = Math.abs(n);
+  const abs = Math.abs(Math.round(n));
   return sign + "$" + abs.toLocaleString(undefined, { maximumFractionDigits: 0 });
 };
 
-function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
-
-/* Seeded RNG (optional) for reproducibility */
-function mulberry32(a) {
-  return function() {
+function mulberry32(a){
+  return function(){
     let t = (a += 0x6D2B79F5);
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -271,443 +381,870 @@ function mulberry32(a) {
   };
 }
 
-function getRng() {
-  const seedStr = document.getElementById("seed").value.trim();
-  if (!seedStr) return Math.random;
-  const seed = Number(seedStr);
-  if (!Number.isFinite(seed)) return Math.random;
-  return mulberry32(seed >>> 0);
+function getRng(){
+  const s = document.getElementById("seed").value.trim();
+  if(!s) return Math.random;
+  const n = Number(s);
+  if(!Number.isFinite(n)) return Math.random;
+  return mulberry32(n >>> 0);
 }
 
-/* Roll integer inclusive */
-function rollInt(rng, min, max) {
+function rollInt(rng, min, max){
   return Math.floor(rng() * (max - min + 1)) + min;
 }
 
-/* Roll percent between min and max inclusive, as decimal */
-function rollPct(rng, minPct, maxPct) {
-  const v = rollInt(rng, minPct, maxPct);
-  return v / 100;
+function rollPct(rng, minPct, maxPct){
+  return rollInt(rng, minPct, maxPct) / 100;
 }
 
-/* ---------- Game Data ---------- */
-const TAX_RATE = 0.10;
-const LIVING_COST = 4000;
-const SAVINGS_RATE = 0.02;
-const KNOWLEDGE_UPGRADE_COST = 500;
-const KNOWLEDGE_MIN = 1;
-const KNOWLEDGE_MAX = 5;
-const START_AGE = 16;
-const END_AGE = 25;
-
-const incomePaths = [
-  { id: "part_time", name: "Part-Time Job", base: 3000, variance: 500, risk: "Very Low" },
-  { id: "full_time", name: "Full-Time Job", base: 12000, variance: 1500, risk: "Low" },
-  { id: "gig", name: "Freelance / Gig", base: 9000, variance: 6000, risk: "Medium" },
-  { id: "business", name: "Small Business", base: 9000, variance: 16000, risk: "High" }
-];
-
-const investmentTypes = [
-  { id: "bonds", name: "Bonds", minPct: 2, maxPct: 4, expected: 3, risk: "Low" },
-  { id: "index", name: "Index Fund", minPct: -5, maxPct: 12, expected: 7, risk: "Medium" },
-  { id: "stock", name: "Individual Stock", minPct: -10, maxPct: 15, expected: 6, risk: "High" },
-  { id: "reinvest", name: "Business Reinvestment", minPct: -20, maxPct: 25, expected: 9, risk: "Very High" }
-];
-
-/* Event cards:
-   Knowledge reduces downside slightly and increases upside slightly.
-*/
-const events = [
-  { name: "Medical bill", minImpact: -1800, maxImpact: -1200, kind: "shock" },
-  { name: "Phone breaks", minImpact: -700, maxImpact: -400, kind: "shock" },
-  { name: "Car repair", minImpact: -1400, maxImpact: -800, kind: "shock" },
-  { name: "Scholarship / grant", minImpact: 1200, maxImpact: 2500, kind: "windfall" },
-  { name: "Side hustle goes viral", minImpact: 800, maxImpact: 3200, kind: "windfall" },
-  { name: "Market downturn (applies to investments)", minImpact: -7, maxImpact: -3, kind: "marketPct" },
-  { name: "Market rally (applies to investments)", minImpact: 3, maxImpact: 8, kind: "marketPct" },
-  { name: "Promotion (next year income boost)", minImpact: 1500, maxImpact: 3500, kind: "incomeBoostNext" },
-  { name: "Unexpected fee", minImpact: -500, maxImpact: -200, kind: "shock" }
-];
+function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
 /* ---------- State ---------- */
 let state = null;
+let ui = {
+  step: 0,            // 0..4
+  yearDraft: null     // holds year computations and choices until applied
+};
 
-function newGame() {
+const steps = [
+  { title:"1) Earn", key:"earn" },
+  { title:"2) Costs", key:"costs" },
+  { title:"3) Budget", key:"budget" },
+  { title:"4) Grow", key:"grow" },
+  { title:"5) Event", key:"event" }
+];
+
+/* ---------- Knowledge effects ---------- */
+function applyKnowledgeToCashImpact(amount){
+  // each level above 1 reduces negative impact by 5%, increases positive by 3%
+  const lvl = state.knowledge;
+  if(amount < 0){
+    const factor = 1 - 0.05*(lvl-1);
+    return Math.round(amount * factor);
+  }
+  const factor = 1 + 0.03*(lvl-1);
+  return Math.round(amount * factor);
+}
+
+function applyKnowledgeToInvestmentReturn(r){
+  // +0.2% per level above 1
+  const bump = 0.002*(state.knowledge-1);
+  return r + bump;
+}
+
+/* ---------- Engine helpers ---------- */
+function netWorth(){
+  return state.cash + state.savings + state.investments - state.debt;
+}
+
+function log(line){
+  state.log.push(line);
+  const el = document.getElementById("log");
+  el.textContent = state.log.join("\n");
+  el.scrollTop = el.scrollHeight;
+}
+
+function setSummary(html){
+  document.getElementById("summary").innerHTML = html;
+}
+
+/* ---------- Game lifecycle ---------- */
+function newGame(){
   state = {
     version: 1,
     name: document.getElementById("playerName").value.trim() || "Player 1",
     age: START_AGE,
     round: 1,
-    knowledge: KNOWLEDGE_MIN,
+    knowledge: 1,
     cash: 500,
     savings: 0,
     investments: 0,
     debt: 0,
     pendingIncomeBoost: 0,
-    history: [],
     log: []
   };
-  logLine("New game started. You begin with $500 cash at age 16.");
-  pushHistory();
-  renderAll();
+  ui.step = 0;
+  ui.yearDraft = null;
+  log("New game started.");
+  log("You begin at Age 16 with $500 cash.");
+  renderHUD();
+  renderStepbar();
+  renderStep();
 }
 
-function netWorth() {
-  return state.cash + state.savings + state.investments - state.debt;
+function resetGame(){
+  if(!confirm("Reset the game?")) return;
+  state = null;
+  ui.step = 0;
+  ui.yearDraft = null;
+  document.getElementById("log").textContent = "";
+  setSummary("Start playing to see results.");
+  newGame();
 }
 
-function pushHistory() {
-  state.history.push({
-    age: state.age,
-    cash: state.cash,
-    savings: state.savings,
-    investments: state.investments,
-    debt: state.debt,
-    netWorth: netWorth()
-  });
+function saveGame(){
+  if(!state) return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, ui }));
+  log("Saved game to this browser.");
 }
 
-function logLine(line) {
-  state.log.push(line);
-  const logEl = document.getElementById("log");
-  logEl.textContent = state.log.join("\n");
-  logEl.scrollTop = logEl.scrollHeight;
-}
-
-/* ---------- UI Init ---------- */
-function initSelects() {
-  const incomeSel = document.getElementById("incomePath");
-  incomeSel.innerHTML = incomePaths.map(p =>
-    `<option value="${p.id}">${p.name} (base ${fmt(p.base)}, risk: ${p.risk})</option>`
-  ).join("");
-
-  const invSel = document.getElementById("investType");
-  invSel.innerHTML = investmentTypes.map(t =>
-    `<option value="${t.id}">${t.name} (range: ${t.minPct}% to ${t.maxPct}%)</option>`
-  ).join("");
-}
-
-/* ---------- Rules Helpers ---------- */
-function applyKnowledgeToEventImpact(amount) {
-  // Knowledge effect: each level above 1 reduces negative impact by 5% and increases positive by 3%
-  const level = state.knowledge;
-  const negReduce = 1 - 0.05 * (level - 1);
-  const posBoost  = 1 + 0.03 * (level - 1);
-
-  if (amount < 0) return Math.round(amount * negReduce);
-  return Math.round(amount * posBoost);
-}
-
-function applyKnowledgeToInvestmentReturn(r) {
-  // Knowledge effect: modestly improves investment outcomes (+0.2% per level above 1)
-  const bump = 0.002 * (state.knowledge - 1);
-  return r + bump;
-}
-
-/* ---------- Core Round Engine ---------- */
-function playRound() {
-  if (!state) return;
-
-  if (state.age > END_AGE) {
-    renderFinal();
-    return;
+function loadGame(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw){ alert("No saved game found in this browser."); return; }
+  try{
+    const parsed = JSON.parse(raw);
+    state = parsed.state;
+    ui = parsed.ui || ui;
+    log("\nLoaded saved game.");
+    renderHUD();
+    renderStepbar();
+    renderStep();
+  }catch(e){
+    alert("Could not load saved game.");
   }
+}
 
-  const rng = getRng();
+/* ---------- Year Draft (staged play) ---------- */
+function ensureYearDraft(){
+  if(ui.yearDraft) return;
 
-  // Read decisions
-  const incomeId = document.getElementById("incomePath").value;
-  const spend = Math.max(0, Number(document.getElementById("spend").value || 0));
-  const saveAlloc = Math.max(0, Number(document.getElementById("saveAlloc").value || 0));
-  const investAlloc = Math.max(0, Number(document.getElementById("investAlloc").value || 0));
-  const investTypeId = document.getElementById("investType").value;
+  ui.yearDraft = {
+    rng: getRng(),
+    incomePathId: "part_time",
+    investTypeId: "index",
 
-  // Income calculation
-  const path = incomePaths.find(p => p.id === incomeId);
+    // computed values
+    grossIncome: 0,
+    taxes: 0,
+    afterTax: 0,
+    netAfterFixed: 0,
+
+    // player inputs
+    spending: 0,
+    saveAlloc: 0,
+    investAlloc: 0,
+
+    // growth results
+    savingsBefore: 0,
+    savingsAfter: 0,
+    invBefore: 0,
+    invAfter: 0,
+    invReturn: 0,
+
+    // event
+    event: null,
+    eventText: "",
+    eventApplied: false,
+
+    // flags for UI reveals
+    revealedIncome: false,
+    revealedCosts: false,
+    revealedGrowth: false,
+    revealedEvent: false
+  };
+}
+
+/* Compute income (random) once per year */
+function computeIncome(){
+  const d = ui.yearDraft;
+  const rng = d.rng;
+  const path = incomePaths.find(p => p.id === d.incomePathId);
+
   const noise = rollInt(rng, -path.variance, path.variance);
-  let grossIncome = clamp(path.base + noise + state.pendingIncomeBoost, 0, 1000000);
-  const boostUsed = state.pendingIncomeBoost;
+  const boost = state.pendingIncomeBoost || 0;
+  const gross = clamp(path.base + noise + boost, 0, 1000000);
+
+  d.grossIncome = gross;
+  d.taxes = Math.round(gross * TAX_RATE);
+  d.afterTax = gross - d.taxes;
+  d.netAfterFixed = d.afterTax - LIVING_COST;
+
+  d.incomeLabel = path.name;
+  d.incomeRisk = path.risk;
+  d.boostUsed = boost;
+
+  // Promotion boost is consumed once income is computed
   state.pendingIncomeBoost = 0;
+}
 
-  const taxes = Math.round(grossIncome * TAX_RATE);
-  const afterTax = grossIncome - taxes;
-  const netAfterFixed = afterTax - LIVING_COST;
+/* Validate and apply budget allocations (from cash) */
+function validateBudget(){
+  const d = ui.yearDraft;
 
-  logLine(`\nYEAR ${state.round} (Age ${state.age})`);
-  logLine(`Income path: ${path.name}`);
-  logLine(`Gross income: ${fmt(grossIncome)}${boostUsed ? ` (includes prior promotion +${fmt(boostUsed)})` : ""}`);
-  logLine(`Taxes (10%): ${fmt(taxes)} | Living costs: ${fmt(LIVING_COST)}`);
-  logLine(`Net after tax & living: ${fmt(netAfterFixed)}`);
+  // If netAfterFixed negative => it becomes debt immediately when we apply year. Budget still uses current cash.
+  const minSaveInvest = Math.max(0, Math.round(Math.max(0, d.netAfterFixed) * 0.10));
+  const saveInvest = d.saveAlloc + d.investAlloc;
 
-  // If netAfterFixed is negative, it becomes debt (simplified)
-  if (netAfterFixed < 0) {
-    const shortfall = -netAfterFixed;
-    state.debt += shortfall;
-    logLine(`Shortfall: ${fmt(shortfall)} added to debt.`);
-  } else {
-    state.cash += netAfterFixed;
-    logLine(`Cash increases by ${fmt(netAfterFixed)}.`);
+  if(d.saveAlloc < 0 || d.investAlloc < 0 || d.spending < 0) return { ok:false, msg:"Numbers must be 0 or higher." };
+
+  if(saveInvest < minSaveInvest){
+    return { ok:false, msg:`Rule: You must save + invest at least ${fmt(minSaveInvest)} this year (10% of net-after-fixed).` };
   }
 
-  // Allocation validations
-  // You can only allocate from available cash
-  const availableCash = state.cash;
-  const totalOut = spend + saveAlloc + investAlloc;
+  // We only allow allocations from cash that will exist *after* applying netAfterFixed.
+  // We'll simulate the year cash position right before budgeting:
+  const cashBeforeBudget = state.cash + Math.max(0, d.netAfterFixed);
+  // If netAfterFixed negative, it doesn't increase cash.
+  const total = d.spending + d.saveAlloc + d.investAlloc;
 
-  if (totalOut > availableCash) {
-    logLine(`Allocation error: You tried to allocate ${fmt(totalOut)} but only have ${fmt(availableCash)} cash.`);
-    logLine(`No allocations applied. Adjust spending/saving/investing and try again.`);
-    renderAll();
-    return;
+  if(total > cashBeforeBudget){
+    return { ok:false, msg:`You tried to allocate ${fmt(total)} but you only have ${fmt(cashBeforeBudget)} available after costs.` };
   }
 
-  // Minimum: 10% of net income must go to saving or investing (if net income positive)
-  const minSaveInvest = Math.max(0, Math.round(Math.max(0, netAfterFixed) * 0.10));
-  const saveInvestTotal = saveAlloc + investAlloc;
-  if (minSaveInvest > 0 && saveInvestTotal < minSaveInvest) {
-    logLine(`Rule check: Minimum save+invest is ${fmt(minSaveInvest)} (10% of net after fixed). You set ${fmt(saveInvestTotal)}.`);
-    logLine(`No allocations applied. Increase saving or investing and try again.`);
-    renderAll();
-    return;
+  return { ok:true, msg:"OK" };
+}
+
+/* Apply growth based on final allocations */
+function computeGrowth(){
+  const d = ui.yearDraft;
+  const rng = d.rng;
+  const invType = investmentTypes.find(t => t.id === d.investTypeId);
+
+  // Apply savings growth
+  d.savingsBefore = state.savings + d.saveAlloc;
+  d.savingsAfter = Math.round(d.savingsBefore * (1 + SAVINGS_RATE));
+
+  // Apply investment return
+  const baseR = rollPct(rng, invType.minPct, invType.maxPct);
+  d.invReturn = applyKnowledgeToInvestmentReturn(baseR);
+
+  d.invBefore = state.investments + d.investAlloc;
+  d.invAfter = Math.round(d.invBefore * (1 + d.invReturn));
+  d.invTypeName = invType.name;
+  d.invRange = `${invType.minPct}% to ${invType.maxPct}%`;
+}
+
+/* Draw and compute event (without applying yet) */
+function computeEvent(){
+  const d = ui.yearDraft;
+  const rng = d.rng;
+
+  const e = events[rollInt(rng, 0, events.length - 1)];
+  d.event = e;
+
+  if(e.kind === "cash"){
+    const impact = rollInt(rng, e.min, e.max);
+    const adj = applyKnowledgeToCashImpact(impact);
+    d.eventImpact = adj;
+    d.eventText = (adj >= 0)
+      ? `You receive ${fmt(adj)}.`
+      : `You owe ${fmt(-adj)}.`;
   }
 
-  // Apply allocations
-  state.cash -= spend;
-  state.cash -= saveAlloc;
-  state.cash -= investAlloc;
-  state.savings += saveAlloc;
-  state.investments += investAlloc;
-
-  logLine(`Spending: ${fmt(spend)} | To savings: ${fmt(saveAlloc)} | To investments: ${fmt(investAlloc)} (${investTypeId})`);
-
-  // Savings growth
-  const savingsBefore = state.savings;
-  state.savings = Math.round(state.savings * (1 + SAVINGS_RATE));
-  logLine(`Savings growth at 2%: ${fmt(savingsBefore)} → ${fmt(state.savings)} (+${fmt(state.savings - savingsBefore)})`);
-
-  // Investment growth
-  const invType = investmentTypes.find(t => t.id === investTypeId);
-  let invReturn = rollPct(rng, invType.minPct, invType.maxPct);
-  invReturn = applyKnowledgeToInvestmentReturn(invReturn);
-
-  const invBefore = state.investments;
-  state.investments = Math.round(state.investments * (1 + invReturn));
-  const invDelta = state.investments - invBefore;
-  const invSignClass = invDelta >= 0 ? "good" : "bad";
-  logLine(`Investment return (${invType.name}): ${(invReturn*100).toFixed(1)}% | ${fmt(invBefore)} → ${fmt(state.investments)} (${invDelta>=0?"+":""}${fmt(invDelta)})`);
-
-  // Event draw
-  const event = events[rollInt(rng, 0, events.length - 1)];
-  applyEvent(rng, event);
-
-  // Debt interest? (Optional simplified: 5% yearly if debt > 0)
-  // Keeping it simple but realistic: add 5% interest to existing debt.
-  if (state.debt > 0) {
-    const debtBefore = state.debt;
-    state.debt = Math.round(state.debt * 1.05);
-    logLine(`Debt interest (5%): ${fmt(debtBefore)} → ${fmt(state.debt)} (+${fmt(state.debt - debtBefore)})`);
+  if(e.kind === "marketPct"){
+    const pct = rollPct(rng, e.min, e.max);
+    const adjPct = applyKnowledgeToInvestmentReturn(pct);
+    d.eventMarketPct = adjPct;
+    d.eventText = `Market shift: ${(adjPct*100).toFixed(1)}% applied to investments.`;
   }
 
-  // Advance time
-  pushHistory();
-  state.age += 1;
-  state.round += 1;
-
-  if (state.age > END_AGE) {
-    renderFinal();
-  } else {
-    renderAll();
+  if(e.kind === "incomeBoostNext"){
+    const boost = rollInt(rng, e.min, e.max);
+    const adj = applyKnowledgeToCashImpact(boost);
+    d.eventBoost = adj;
+    d.eventText = `Next year income boost: +${fmt(adj)}.`;
   }
 }
 
-function applyEvent(rng, event) {
-  logLine(`Event drawn: ${event.name}`);
+/* Commit the whole year to state (only once) */
+function applyYear(){
+  const d = ui.yearDraft;
 
-  if (event.kind === "shock" || event.kind === "windfall") {
-    const impact = rollInt(rng, event.minImpact, event.maxImpact);
-    const adjusted = applyKnowledgeToEventImpact(impact);
+  log(`\nYEAR ${state.round} (Age ${state.age})`);
+  log(`Income path: ${d.incomeLabel}${d.boostUsed ? ` (promotion +${fmt(d.boostUsed)} included)` : ""}`);
+  log(`Gross income: ${fmt(d.grossIncome)} | Taxes: ${fmt(d.taxes)} | Living costs: ${fmt(LIVING_COST)}`);
+  log(`Net after fixed: ${fmt(d.netAfterFixed)}`);
 
-    // Apply to cash; if cash insufficient for negative, add debt
-    if (adjusted >= 0) {
-      state.cash += adjusted;
-      logLine(`Event impact: +${fmt(adjusted)} added to cash.`);
-    } else {
-      const cost = -adjusted;
-      if (state.cash >= cost) {
+  // Apply netAfterFixed
+  if(d.netAfterFixed < 0){
+    const shortfall = -d.netAfterFixed;
+    state.debt += shortfall;
+    log(`Shortfall added to debt: ${fmt(shortfall)}.`);
+  }else{
+    state.cash += d.netAfterFixed;
+    log(`Cash increased by net-after-fixed: +${fmt(d.netAfterFixed)}.`);
+  }
+
+  // Apply budgeting out of cash
+  state.cash -= d.spending;
+  state.cash -= d.saveAlloc;
+  state.cash -= d.investAlloc;
+
+  log(`Budget: Spend ${fmt(d.spending)} | Save ${fmt(d.saveAlloc)} | Invest ${fmt(d.investAlloc)} (${d.invTypeName})`);
+
+  // Apply growth outcomes
+  log(`Savings growth (2%): ${fmt(d.savingsBefore)} → ${fmt(d.savingsAfter)}.`);
+  log(`Investment return: ${(d.invReturn*100).toFixed(1)}% | ${fmt(d.invBefore)} → ${fmt(d.invAfter)}.`);
+
+  state.savings = d.savingsAfter;
+  state.investments = d.invAfter;
+
+  // Apply event
+  log(`Event: ${d.event.name}`);
+  log(d.eventText);
+
+  if(d.event.kind === "cash"){
+    if(d.eventImpact >= 0){
+      state.cash += d.eventImpact;
+    }else{
+      const cost = -d.eventImpact;
+      if(state.cash >= cost){
         state.cash -= cost;
-        logLine(`Event impact: -${fmt(cost)} paid from cash.`);
-      } else {
+      }else{
         const remainder = cost - state.cash;
-        logLine(`Event impact: -${fmt(cost)}. Cash depleted (${fmt(state.cash)}), remainder ${fmt(remainder)} added to debt.`);
         state.cash = 0;
         state.debt += remainder;
+        log(`Cash ran out. Remaining ${fmt(remainder)} added to debt.`);
       }
     }
   }
 
-  if (event.kind === "marketPct") {
-    const pct = rollPct(rng, event.minImpact, event.maxImpact); // these are negative or positive integers treated as %
-    // Knowledge slightly dampens downturn and slightly enhances rally via applyKnowledgeToInvestmentReturn
-    const adjustedPct = applyKnowledgeToInvestmentReturn(pct);
+  if(d.event.kind === "marketPct"){
     const before = state.investments;
-    state.investments = Math.round(state.investments * (1 + adjustedPct));
+    state.investments = Math.round(before * (1 + d.eventMarketPct));
     const delta = state.investments - before;
-    logLine(`Market event applied to investments: ${(adjustedPct*100).toFixed(1)}% | ${fmt(before)} → ${fmt(state.investments)} (${delta>=0?"+":""}${fmt(delta)})`);
+    log(`Investments changed by market: ${fmt(before)} → ${fmt(state.investments)} (${delta>=0?"+":""}${fmt(delta)}).`);
   }
 
-  if (event.kind === "incomeBoostNext") {
-    const boost = rollInt(rng, event.minImpact, event.maxImpact);
-    const adjusted = applyKnowledgeToEventImpact(boost);
-    state.pendingIncomeBoost += adjusted;
-    logLine(`Next year's income boost scheduled: +${fmt(adjusted)}.`);
-  }
-}
-
-/* ---------- Knowledge Upgrade ---------- */
-function upgradeKnowledge() {
-  if (!state) return;
-  if (state.knowledge >= KNOWLEDGE_MAX) {
-    logLine("Knowledge is already at max (5).");
-    return;
-  }
-  if (state.cash < KNOWLEDGE_UPGRADE_COST) {
-    logLine(`Not enough cash to upgrade knowledge. Need ${fmt(KNOWLEDGE_UPGRADE_COST)}.`);
-    return;
-  }
-  state.cash -= KNOWLEDGE_UPGRADE_COST;
-  state.knowledge += 1;
-  logLine(`Knowledge upgraded to ${state.knowledge}. Cost: ${fmt(KNOWLEDGE_UPGRADE_COST)}.`);
-  pushHistory();
-  renderAll();
-}
-
-/* ---------- Save/Load/Reset ---------- */
-const STORAGE_KEY = "moneyLabSave_v1";
-
-function saveGame() {
-  if (!state) return;
-  const payload = JSON.stringify(state);
-  localStorage.setItem(STORAGE_KEY, payload);
-  logLine("Game saved to this browser (localStorage).");
-}
-
-function loadGame() {
-  const payload = localStorage.getItem(STORAGE_KEY);
-  if (!payload) {
-    alert("No saved game found in this browser.");
-    return;
-  }
-  try {
-    state = JSON.parse(payload);
-    logLine("\nGame loaded.");
-    renderAll();
-  } catch (e) {
-    alert("Saved game data could not be loaded.");
-  }
-}
-
-function resetGame() {
-  state = null;
-  document.getElementById("log").textContent = "";
-  document.getElementById("summary").textContent = "Start a new game to begin.";
-  document.querySelector("#historyTable tbody").innerHTML = "";
-  renderAll();
-}
-
-/* ---------- Rendering ---------- */
-function renderAll() {
-  if (!state) {
-    document.getElementById("ageKpi").textContent = "—";
-    document.getElementById("knowledgeKpi").textContent = "—";
-    document.getElementById("cashKpi").textContent = "—";
-    document.getElementById("savingsKpi").textContent = "—";
-    document.getElementById("investKpi").textContent = "—";
-    document.getElementById("debtKpi").textContent = "—";
-    document.getElementById("netWorthKpi").textContent = "—";
-    document.getElementById("roundKpi").textContent = "—";
-    document.getElementById("playRoundBtn").disabled = true;
-    document.getElementById("upgradeBtn").disabled = true;
-    return;
+  if(d.event.kind === "incomeBoostNext"){
+    state.pendingIncomeBoost += d.eventBoost;
   }
 
-  document.getElementById("playRoundBtn").disabled = false;
-  document.getElementById("upgradeBtn").disabled = false;
+  // Debt interest 5%
+  if(state.debt > 0){
+    const before = state.debt;
+    state.debt = Math.round(before * 1.05);
+    log(`Debt interest (5%): ${fmt(before)} → ${fmt(state.debt)}.`);
+  }
 
-  document.getElementById("ageKpi").textContent = String(state.age);
-  document.getElementById("knowledgeKpi").textContent = String(state.knowledge);
-  document.getElementById("cashKpi").textContent = fmt(state.cash);
-  document.getElementById("savingsKpi").textContent = fmt(state.savings);
-  document.getElementById("investKpi").textContent = fmt(state.investments);
-  document.getElementById("debtKpi").textContent = fmt(state.debt);
-  document.getElementById("netWorthKpi").textContent = fmt(netWorth());
-  document.getElementById("roundKpi").textContent = String(state.round);
+  // advance time
+  state.age += 1;
+  state.round += 1;
 
-  const summary = document.getElementById("summary");
+  // clear draft
+  ui.yearDraft = null;
+  ui.step = 0;
+
+  // Update summary
   const nw = netWorth();
-  const nwClass = nw >= 0 ? "good" : "bad";
-  summary.innerHTML =
-    `<div><strong>${state.name}</strong> is currently age <strong>${state.age}</strong>.</div>
-     <div class="muted">Net worth: <strong class="${nwClass}">${fmt(nw)}</strong> (cash + savings + investments − debt).</div>
-     <div class="muted">Set this year’s choices on the left, then click <strong>Play Year</strong>.</div>`;
+  setSummary(`
+    <div><strong>Year complete.</strong> You are now Age <strong>${state.age}</strong>.</div>
+    <div class="muted">Net Worth: <strong class="${nw>=0 ? "good":"bad"}">${fmt(nw)}</strong> (cash + savings + investments − debt)</div>
+  `);
 
-  renderHistory();
-}
+  renderHUD();
 
-function renderHistory() {
-  const tbody = document.querySelector("#historyTable tbody");
-  tbody.innerHTML = "";
-  for (const h of state.history.slice().reverse()) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${h.age}</td>
-      <td>${fmt(h.cash)}</td>
-      <td>${fmt(h.savings)}</td>
-      <td>${fmt(h.investments)}</td>
-      <td>${fmt(h.debt)}</td>
-      <td><strong class="${h.netWorth >= 0 ? "good" : "bad"}">${fmt(h.netWorth)}</strong></td>
-    `;
-    tbody.appendChild(tr);
+  if(state.age > END_AGE){
+    showFinal();
+  }else{
+    renderStepbar();
+    renderStep();
   }
 }
 
-function renderFinal() {
-  // Final Score =
-  // (Net Worth × 0.7) + (Knowledge × $5,000) − (Debt × 1.2)
+function showFinal(){
   const nw = netWorth();
   const score = Math.round((nw * 0.7) + (state.knowledge * 5000) - (state.debt * 1.2));
+  log("\n=== GAME COMPLETE (Age 25 reached) ===");
+  log(`Final Net Worth: ${fmt(nw)}`);
+  log(`Final Score = (NW×0.7) + (Knowledge×$5,000) − (Debt×1.2)`);
+  log(`Final Score: ${fmt(score)}`);
 
-  logLine("\n=== GAME COMPLETE (Age 25 reached) ===");
-  logLine(`Final Net Worth: ${fmt(nw)}`);
-  logLine(`Knowledge Bonus: ${fmt(state.knowledge * 5000)} (Knowledge × $5,000)`);
-  logLine(`Debt Penalty: -${fmt(Math.round(state.debt * 1.2))} (Debt × 1.2)`);
-  logLine(`Final Score: ${fmt(score)}\n`);
+  setSummary(`
+    <div><strong>Game complete.</strong></div>
+    <div class="muted">Final Net Worth: <strong class="${nw>=0 ? "good":"bad"}">${fmt(nw)}</strong></div>
+    <div class="muted">Final Score: <strong>${fmt(score)}</strong></div>
+    <div class="muted">Reset to play again, or Save to keep this run in the browser.</div>
+  `);
 
-  const summary = document.getElementById("summary");
-  summary.innerHTML = `
-    <div><strong>Game Complete.</strong></div>
-    <div class="muted">Final Net Worth: <strong class="${nw >= 0 ? "good" : "bad"}">${fmt(nw)}</strong></div>
-    <div class="muted">Final Score (0.7×NW + $5,000×Knowledge − 1.2×Debt): <strong>${fmt(score)}</strong></div>
-    <div class="muted">You can Reset to play again, or Save to keep this run in the browser.</div>
-  `;
-
-  document.getElementById("playRoundBtn").disabled = true;
+  document.getElementById("btnNext").disabled = true;
 }
 
-/* ---------- Wire Up ---------- */
-initSelects();
+/* ---------- UI Rendering ---------- */
+function renderHUD(){
+  if(!state) return;
+  const nw = netWorth();
+  document.getElementById("kAge").textContent = String(state.age);
+  document.getElementById("kKnow").textContent = String(state.knowledge);
+  document.getElementById("kCash").textContent = fmt(state.cash);
+  document.getElementById("kSave").textContent = fmt(state.savings);
+  document.getElementById("kInv").textContent = fmt(state.investments);
+  document.getElementById("kDebtNW").innerHTML =
+    `<span class="${state.debt>0 ? "bad":"muted"}">${fmt(state.debt)}</span>
+     <span class="muted"> / </span>
+     <span class="${nw>=0 ? "good":"bad"}">${fmt(nw)}</span>`;
+}
 
-document.getElementById("playRoundBtn").addEventListener("click", playRound);
-document.getElementById("upgradeBtn").addEventListener("click", upgradeKnowledge);
-document.getElementById("saveBtn").addEventListener("click", saveGame);
-document.getElementById("loadBtn").addEventListener("click", loadGame);
-document.getElementById("resetBtn").addEventListener("click", () => {
-  if (confirm("Reset the game? This clears the current run (saved game in browser is not deleted unless you overwrite it).")) {
-    resetGame();
-    newGame();
+function renderStepbar(){
+  const bar = document.getElementById("stepbar");
+  bar.innerHTML = "";
+  steps.forEach((s, idx) => {
+    const el = document.createElement("div");
+    el.className = "chip" + (idx === ui.step ? " active" : "");
+    el.textContent = s.title;
+    el.onclick = () => { ui.step = idx; renderStepbar(); renderStep(); };
+    bar.appendChild(el);
+  });
+
+  // nav buttons
+  document.getElementById("btnBack").disabled = (ui.step === 0);
+  document.getElementById("btnNext").textContent = (ui.step === 4) ? "Finish Year" : "Next";
+  document.getElementById("btnNext").disabled = false;
+}
+
+function renderStep(){
+  ensureYearDraft();
+  const d = ui.yearDraft;
+
+  const container = document.getElementById("stepCard");
+
+  if(state.age > END_AGE){
+    container.innerHTML = `<h2>Game Complete</h2><div class="muted">Reset to play again.</div>`;
+    return;
   }
-});
 
-// Start automatically
+  // Step content
+  if(ui.step === 0){
+    container.innerHTML = `
+      <h2>Step 1: Earn Money</h2>
+      <div class="muted">Pick an income path for Age ${state.age}. Then “Reveal Income” to see what you earned.</div>
+
+      <label>Income path</label>
+      <select id="incomeSel">
+        ${incomePaths.map(p => `<option value="${p.id}" ${p.id===d.incomePathId?"selected":""}>${p.name} (base ${fmt(p.base)}, risk: ${p.risk})</option>`).join("")}
+      </select>
+
+      <div class="btnRow">
+        <button class="secondary half" id="revealIncomeBtn">${d.revealedIncome ? "Income Revealed" : "Reveal Income"}</button>
+        <button class="half" id="lockIncomeBtn">Lock In This Path</button>
+      </div>
+
+      <div class="flipWrap">
+        <div class="flip ${d.revealedIncome ? "revealed" : ""}" id="incomeFlip">
+          <div class="face front">
+            <div>
+              <div class="stamp">Income Card (Face Down)</div>
+              <div class="bigTitle">Tap “Reveal Income”</div>
+              <div class="bigBody">Your earnings are random within the risk level. Real life has uncertainty.</div>
+            </div>
+            <div class="bigBody muted">Rule preview: Taxes (10%) + Living Costs (${fmt(LIVING_COST)}) next step.</div>
+          </div>
+          <div class="face back">
+            <div>
+              <div class="stamp">Income Revealed</div>
+              <div class="bigTitle">${d.incomeLabel || "—"}</div>
+              <div class="bigBody">
+                Gross Income: <strong>${d.grossIncome ? fmt(d.grossIncome) : "—"}</strong><br/>
+                ${d.boostUsed ? `Promotion boost included: <strong>+${fmt(d.boostUsed)}</strong><br/>` : ""}
+                Risk: <strong>${d.incomeRisk || "—"}</strong>
+              </div>
+            </div>
+            <div class="bigBody muted">Proceed to costs to see taxes and required expenses.</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // wire handlers
+    document.getElementById("incomeSel").onchange = (e) => {
+      d.incomePathId = e.target.value;
+      // If already revealed, re-reveal with new choice (keeps same RNG sequence, but recompute)
+      d.revealedIncome = false;
+      d.revealedCosts = false;
+      renderStep();
+    };
+
+    document.getElementById("revealIncomeBtn").onclick = () => {
+      // compute income once per year
+      computeIncome();
+      d.revealedIncome = true;
+      renderStep();
+    };
+
+    document.getElementById("lockIncomeBtn").onclick = () => {
+      if(!d.revealedIncome){
+        alert("Reveal your income first.");
+        return;
+      }
+      setSummary(`<div><strong>Income locked.</strong> Now go to Step 2 to see your taxes and living costs.</div>`);
+      ui.step = 1;
+      renderStepbar();
+      renderStep();
+    };
+
+    return;
+  }
+
+  if(ui.step === 1){
+    // require income revealed
+    if(!d.revealedIncome){
+      container.innerHTML = `
+        <h2>Step 2: Costs</h2>
+        <div class="muted">You need to reveal your income first (Step 1).</div>
+        <div class="btnRow"><button class="secondary half" id="goEarn">Go to Step 1</button></div>
+      `;
+      document.getElementById("goEarn").onclick = () => { ui.step = 0; renderStepbar(); renderStep(); };
+      return;
+    }
+
+    // reveal costs
+    container.innerHTML = `
+      <h2>Step 2: Pay Taxes + Living Costs</h2>
+      <div class="muted">This step shows your required costs for the year.</div>
+
+      <div class="btnRow">
+        <button class="secondary half" id="revealCostsBtn">${d.revealedCosts ? "Costs Revealed" : "Reveal Costs"}</button>
+        <button class="half" id="lockCostsBtn">Lock In Costs</button>
+      </div>
+
+      <div class="flipWrap">
+        <div class="flip ${d.revealedCosts ? "revealed" : ""}" id="costFlip">
+          <div class="face front">
+            <div>
+              <div class="stamp">Costs Card (Face Down)</div>
+              <div class="bigTitle">Tap “Reveal Costs”</div>
+              <div class="bigBody">Everyone has fixed costs. Planning starts here.</div>
+            </div>
+            <div class="bigBody muted">Taxes are 10% of income. Living costs are ${fmt(LIVING_COST)}.</div>
+          </div>
+          <div class="face back">
+            <div>
+              <div class="stamp">Costs Revealed</div>
+              <div class="bigTitle">Your Required Costs</div>
+              <div class="bigBody">
+                Taxes (10%): <strong>${fmt(d.taxes)}</strong><br/>
+                Living Costs: <strong>${fmt(LIVING_COST)}</strong><br/>
+                After Tax: <strong>${fmt(d.afterTax)}</strong><br/>
+                Net After Fixed: <strong class="${d.netAfterFixed>=0?"good":"bad"}">${fmt(d.netAfterFixed)}</strong>
+              </div>
+            </div>
+            <div class="bigBody muted">${d.netAfterFixed>=0 ? "Next: budget your remaining money." : "Warning: shortfall becomes debt. Next: budget what you can."}</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("revealCostsBtn").onclick = () => {
+      // income already computed, costs already derived; just reveal
+      d.revealedCosts = true;
+      renderStep();
+    };
+
+    document.getElementById("lockCostsBtn").onclick = () => {
+      if(!d.revealedCosts){ alert("Reveal your costs first."); return; }
+      ui.step = 2;
+      renderStepbar();
+      renderStep();
+    };
+
+    return;
+  }
+
+  if(ui.step === 2){
+    if(!d.revealedCosts){
+      container.innerHTML = `
+        <h2>Step 3: Budget</h2>
+        <div class="muted">You need to reveal costs first (Step 2).</div>
+        <div class="btnRow"><button class="secondary half" id="goCosts">Go to Step 2</button></div>
+      `;
+      document.getElementById("goCosts").onclick = () => { ui.step = 1; renderStepbar(); renderStep(); };
+      return;
+    }
+
+    // available after fixed for budgeting (cash after netAfterFixed if positive)
+    const cashAfterFixed = state.cash + Math.max(0, d.netAfterFixed);
+    const minSaveInvest = Math.max(0, Math.round(Math.max(0, d.netAfterFixed) * 0.10));
+    const currentTotal = d.spending + d.saveAlloc + d.investAlloc;
+
+    container.innerHTML = `
+      <h2>Step 3: Budget Your Money</h2>
+      <div class="muted">You have <strong>${fmt(cashAfterFixed)}</strong> available after fixed costs this year.</div>
+      <div class="muted">Rule: Save + Invest at least <strong>${fmt(minSaveInvest)}</strong> (10% of net-after-fixed when positive).</div>
+
+      <div class="hr"></div>
+
+      <div class="btnRow">
+        <button class="secondary third" id="presetSafe">Preset: Safe</button>
+        <button class="secondary third" id="presetBalanced">Preset: Balanced</button>
+        <button class="secondary third" id="presetBold">Preset: Bold</button>
+      </div>
+
+      <label>Investment type</label>
+      <select id="invSel">
+        ${investmentTypes.map(t => `<option value="${t.id}" ${t.id===d.investTypeId?"selected":""}>${t.name} (range ${t.minPct}% to ${t.maxPct}%)</option>`).join("")}
+      </select>
+
+      <label>Spending</label>
+      <div class="rangeWrap">
+        <input id="spendRange" type="range" min="0" max="${Math.max(0, cashAfterFixed)}" value="${clamp(d.spending, 0, cashAfterFixed)}" />
+        <div class="mini"><strong id="spendVal">${fmt(d.spending)}</strong></div>
+      </div>
+
+      <label>Move to Savings</label>
+      <div class="rangeWrap">
+        <input id="saveRange" type="range" min="0" max="${Math.max(0, cashAfterFixed)}" value="${clamp(d.saveAlloc, 0, cashAfterFixed)}" />
+        <div class="mini"><strong id="saveVal">${fmt(d.saveAlloc)}</strong></div>
+      </div>
+
+      <label>Invest</label>
+      <div class="rangeWrap">
+        <input id="invRange" type="range" min="0" max="${Math.max(0, cashAfterFixed)}" value="${clamp(d.investAlloc, 0, cashAfterFixed)}" />
+        <div class="mini"><strong id="invVal">${fmt(d.investAlloc)}</strong></div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="muted">
+        Total allocated: <strong>${fmt(currentTotal)}</strong> / ${fmt(cashAfterFixed)}<br/>
+        Save+Invest: <strong>${fmt(d.saveAlloc + d.investAlloc)}</strong> (min ${fmt(minSaveInvest)})
+      </div>
+
+      <div class="btnRow">
+        <button class="half" id="validateBudgetBtn">Lock Budget</button>
+        <button class="secondary half" id="autoFixBtn">Auto-Fix to Meet Rules</button>
+      </div>
+    `;
+
+    const spendEl = document.getElementById("spendRange");
+    const saveEl = document.getElementById("saveRange");
+    const invEl  = document.getElementById("invRange");
+
+    const updateVals = () => {
+      d.spending = Number(spendEl.value);
+      d.saveAlloc = Number(saveEl.value);
+      d.investAlloc = Number(invEl.value);
+      document.getElementById("spendVal").textContent = fmt(d.spending);
+      document.getElementById("saveVal").textContent = fmt(d.saveAlloc);
+      document.getElementById("invVal").textContent = fmt(d.investAlloc);
+    };
+
+    spendEl.oninput = updateVals;
+    saveEl.oninput  = updateVals;
+    invEl.oninput   = updateVals;
+
+    document.getElementById("invSel").onchange = (e) => {
+      d.investTypeId = e.target.value;
+    };
+
+    function applyPreset(type){
+      // Presets allocate based on available cashAfterFixed
+      // Safe: 20% save, 10% invest, remainder spend
+      // Balanced: 15% save, 15% invest
+      // Bold: 10% save, 25% invest
+      let saveP=0.2, invP=0.1;
+      if(type==="balanced"){ saveP=0.15; invP=0.15; }
+      if(type==="bold"){ saveP=0.10; invP=0.25; }
+      d.saveAlloc = Math.round(cashAfterFixed * saveP);
+      d.investAlloc = Math.round(cashAfterFixed * invP);
+      d.spending = Math.max(0, cashAfterFixed - d.saveAlloc - d.investAlloc);
+
+      spendEl.value = d.spending;
+      saveEl.value = d.saveAlloc;
+      invEl.value = d.investAlloc;
+      updateVals();
+      renderStep(); // refresh summary numbers
+    }
+
+    document.getElementById("presetSafe").onclick = () => applyPreset("safe");
+    document.getElementById("presetBalanced").onclick = () => applyPreset("balanced");
+    document.getElementById("presetBold").onclick = () => applyPreset("bold");
+
+    document.getElementById("autoFixBtn").onclick = () => {
+      // Ensure min save+invest, then ensure total <= cashAfterFixed by reducing spending first
+      const need = Math.max(0, minSaveInvest - (d.saveAlloc + d.investAlloc));
+      if(need > 0){
+        d.saveAlloc += need; // push into savings by default
+      }
+      const total = d.spending + d.saveAlloc + d.investAlloc;
+      if(total > cashAfterFixed){
+        const over = total - cashAfterFixed;
+        d.spending = Math.max(0, d.spending - over);
+      }
+      spendEl.value = d.spending;
+      saveEl.value = d.saveAlloc;
+      invEl.value = d.investAlloc;
+      updateVals();
+      renderStep();
+    };
+
+    document.getElementById("validateBudgetBtn").onclick = () => {
+      const check = validateBudget();
+      if(!check.ok){ alert(check.msg); return; }
+      setSummary(`<div><strong>Budget locked.</strong> Next: see growth results.</div>`);
+      ui.step = 3;
+      renderStepbar();
+      renderStep();
+    };
+
+    return;
+  }
+
+  if(ui.step === 3){
+    // Growth step requires budget to be valid
+    const check = validateBudget();
+    if(!check.ok){
+      container.innerHTML = `
+        <h2>Step 4: Grow (Savings + Investments)</h2>
+        <div class="muted">Your budget isn’t valid yet:</div>
+        <div class="muted"><strong class="bad">${check.msg}</strong></div>
+        <div class="btnRow"><button class="secondary half" id="goBudget">Go Back to Budget</button></div>
+      `;
+      document.getElementById("goBudget").onclick = () => { ui.step = 2; renderStepbar(); renderStep(); };
+      return;
+    }
+
+    container.innerHTML = `
+      <h2>Step 4: Growth Results</h2>
+      <div class="muted">Your savings compound at 2%. Your investments can rise or fall based on risk.</div>
+
+      <div class="btnRow">
+        <button class="secondary half" id="revealGrowthBtn">${d.revealedGrowth ? "Growth Revealed" : "Reveal Growth"}</button>
+        <button class="half" id="lockGrowthBtn">Lock Growth</button>
+      </div>
+
+      <div class="flipWrap">
+        <div class="flip ${d.revealedGrowth ? "revealed" : ""}" id="growthFlip">
+          <div class="face front">
+            <div>
+              <div class="stamp">Growth Card (Face Down)</div>
+              <div class="bigTitle">Tap “Reveal Growth”</div>
+              <div class="bigBody">Compounding can build wealth over time, but investing includes risk.</div>
+            </div>
+            <div class="bigBody muted">Your knowledge level slightly improves outcomes.</div>
+          </div>
+          <div class="face back">
+            <div>
+              <div class="stamp">Growth Revealed</div>
+              <div class="bigTitle">This Year’s Growth</div>
+              <div class="bigBody">
+                Savings (2%): <strong>${d.revealedGrowth ? `${fmt(d.savingsBefore)} → ${fmt(d.savingsAfter)}` : "—"}</strong><br/>
+                Investments (${d.invTypeName || "—"}): <strong>${d.revealedGrowth ? `${(d.invReturn*100).toFixed(1)}%` : "—"}</strong><br/>
+                Invest value: <strong>${d.revealedGrowth ? `${fmt(d.invBefore)} → ${fmt(d.invAfter)}` : "—"}</strong>
+              </div>
+            </div>
+            <div class="bigBody muted">Next: draw your event card.</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("revealGrowthBtn").onclick = () => {
+      computeGrowth();
+      d.revealedGrowth = true;
+      renderStep();
+    };
+
+    document.getElementById("lockGrowthBtn").onclick = () => {
+      if(!d.revealedGrowth){ alert("Reveal growth first."); return; }
+      ui.step = 4;
+      renderStepbar();
+      renderStep();
+    };
+
+    return;
+  }
+
+  if(ui.step === 4){
+    // event needs growth computed
+    if(!d.revealedGrowth){
+      container.innerHTML = `
+        <h2>Step 5: Event</h2>
+        <div class="muted">Reveal growth first (Step 4) so the year is ready to finalize.</div>
+        <div class="btnRow"><button class="secondary half" id="goGrow">Go to Step 4</button></div>
+      `;
+      document.getElementById("goGrow").onclick = () => { ui.step = 3; renderStepbar(); renderStep(); };
+      return;
+    }
+
+    container.innerHTML = `
+      <h2>Step 5: Draw an Event Card</h2>
+      <div class="muted">Real life happens. Your knowledge level reduces harm and slightly boosts positives.</div>
+
+      <div class="btnRow">
+        <button class="secondary half" id="drawEventBtn">${d.revealedEvent ? "Event Revealed" : "Draw Event"}</button>
+        <button class="half" id="finishYearBtn">Finish Year</button>
+      </div>
+
+      <div class="flipWrap">
+        <div class="flip ${d.revealedEvent ? "revealed" : ""}" id="eventFlip">
+          <div class="face front">
+            <div>
+              <div class="stamp">Event Card (Face Down)</div>
+              <div class="bigTitle">Tap “Draw Event”</div>
+              <div class="bigBody">This can help you or hurt you. Planning ahead matters.</div>
+            </div>
+            <div class="bigBody muted">After the event, we apply debt interest (5%) and advance age.</div>
+          </div>
+          <div class="face back">
+            <div>
+              <div class="stamp">Event Revealed</div>
+              <div class="bigTitle">${d.event ? d.event.name : "—"}</div>
+              <div class="bigBody">
+                ${d.eventText ? d.eventText : "—"}
+              </div>
+            </div>
+            <div class="bigBody muted">Finish the year to apply everything to your account.</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("drawEventBtn").onclick = () => {
+      computeEvent();
+      d.revealedEvent = true;
+      renderStep();
+    };
+
+    document.getElementById("finishYearBtn").onclick = () => {
+      if(!d.revealedEvent){ alert("Draw the event first."); return; }
+      applyYear();
+      renderStepbar();
+      renderStep();
+    };
+
+    return;
+  }
+}
+
+/* ---------- Navigation Buttons ---------- */
+document.getElementById("btnBack").onclick = () => {
+  ui.step = Math.max(0, ui.step - 1);
+  renderStepbar();
+  renderStep();
+};
+
+document.getElementById("btnNext").onclick = () => {
+  if(ui.step < 4){
+    ui.step += 1;
+    renderStepbar();
+    renderStep();
+  }else{
+    // Step 5: finish year (same as button in step)
+    // If the step UI already shows finish-year button, this is a convenience fallback:
+    if(ui.yearDraft && ui.yearDraft.revealedEvent){
+      applyYear();
+      renderStepbar();
+      renderStep();
+    }else{
+      alert("Go through Step 5 and reveal the event, then finish the year.");
+    }
+  }
+};
+
+document.getElementById("btnUpgrade").onclick = () => {
+  if(!state) return;
+  if(state.knowledge >= 5){ alert("Knowledge is already max (5)."); return; }
+  if(state.cash < KNOWLEDGE_UPGRADE_COST){ alert(`Need ${fmt(KNOWLEDGE_UPGRADE_COST)} cash to upgrade.`); return; }
+  state.cash -= KNOWLEDGE_UPGRADE_COST;
+  state.knowledge += 1;
+  renderHUD();
+  log(`Knowledge upgraded to ${state.knowledge} for ${fmt(KNOWLEDGE_UPGRADE_COST)}.`);
+};
+
+document.getElementById("btnSaveGame").onclick = saveGame;
+document.getElementById("btnLoadGame").onclick = loadGame;
+document.getElementById("btnReset").onclick = resetGame;
+
+/* ---------- Boot ---------- */
 newGame();
 </script>
 </body>
