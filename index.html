@@ -7,7 +7,6 @@
   <style>
     :root{
       --bg:#070a16;
-      --panel:#101834;
       --text:#eef1ff;
       --muted:#aab3da;
       --line:rgba(255,255,255,.10);
@@ -23,19 +22,26 @@
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       background: radial-gradient(1200px 900px at 20% 10%, #1a2453 0%, var(--bg) 55%);
       color:var(--text);
+      overflow-x:hidden;
     }
     header{
       position: sticky; top:0; z-index:50;
       backdrop-filter: blur(12px);
       background: rgba(7,10,22,.75);
       border-bottom: 1px solid var(--line);
-      padding: 14px 16px;
+      padding: 12px 16px;
     }
     header .top{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
       max-width: 1100px; margin:0 auto;
     }
-    h1{ margin:0; font-size:16px; letter-spacing:.2px; }
+    h1{ margin:0; font-size:16px; letter-spacing:.2px; display:flex; align-items:center; gap:10px; }
+    .brandDot{
+      width:12px; height:12px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(122,162,255,.12);
+      border:1px solid rgba(255,255,255,.12);
+    }
     .sub{ margin-top:4px; color:var(--muted); font-size:12px; line-height:1.35; }
     main{ max-width:1100px; margin:0 auto; padding: 16px; }
 
@@ -70,6 +76,7 @@
     @media (max-width: 980px){
       .grid{ grid-template-columns:1fr; }
     }
+
     .panel{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
@@ -78,7 +85,7 @@
       box-shadow: var(--shadow);
       overflow:hidden;
       position: relative;
-      min-height: 420px;
+      min-height: 440px;
     }
     .side{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -87,6 +94,7 @@
       padding: 14px;
       box-shadow: var(--shadow);
     }
+
     .card{
       border-radius: var(--radius);
       background: rgba(0,0,0,.18);
@@ -107,6 +115,8 @@
       width:100%;
       box-shadow: 0 10px 25px rgba(0,0,0,.25);
       text-align:left;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     button.secondary{
       border-color: rgba(255,255,255,.16);
@@ -153,8 +163,11 @@
       font-size: 12px;
       line-height: 1.4;
     }
+
     .pill{
-      display:inline-block;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       padding: 5px 10px;
       border-radius: 999px;
       border:1px solid rgba(255,255,255,.16);
@@ -162,7 +175,15 @@
       font-size: 12px;
       font-weight: 900;
       margin-right: 8px;
+      margin-bottom: 8px;
+      flex-wrap:wrap;
     }
+    .avatarDot{
+      width:10px; height:10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.05);
+    }
+
     .progressWrap{
       margin-top:10px;
       border:1px solid var(--line);
@@ -176,6 +197,7 @@
       width: 0%;
       background: linear-gradient(90deg, rgba(94,230,168,.95), rgba(122,162,255,.95));
     }
+
     .log{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
@@ -224,19 +246,98 @@
       font-size: 13px;
     }
     .billItem strong{ color: var(--text); }
+
+    .palette{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .colorPick{
+      width:34px; height:34px; border-radius: 12px;
+      border:1px solid rgba(255,255,255,.16);
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,.20);
+      position:relative;
+    }
+    .colorPick.selected::after{
+      content:"";
+      position:absolute; inset:7px;
+      border-radius:10px;
+      border:2px solid rgba(255,255,255,.85);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.10);
+    }
+
+    /* Header mini controls */
+    .headerControls{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .mini{
+      display:flex; align-items:center; gap:8px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      user-select:none;
+    }
+    .toggle{
+      width: 44px; height: 24px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      position:relative;
+      cursor:pointer;
+      flex: 0 0 auto;
+    }
+    .toggleKnob{
+      position:absolute; top:3px; left:3px;
+      width:18px; height:18px; border-radius:999px;
+      background: rgba(255,255,255,.85);
+      transition: left .15s ease, background .15s ease;
+    }
+    .toggle.on{
+      background: rgba(94,230,168,.18);
+      border-color: rgba(94,230,168,.35);
+    }
+    .toggle.on .toggleKnob{ left:23px; background: rgba(94,230,168,.95); }
+
+    /* Confetti canvas */
+    #confetti{
+      position: fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:999;
+    }
   </style>
 </head>
 
 <body>
+<canvas id="confetti"></canvas>
+
 <header>
   <div class="top">
     <div>
-      <h1>Money Lab — Tap Card Game</h1>
+      <h1>
+        <span class="brandDot" id="brandDot"></span>
+        Money Lab — Tap Card Game
+      </h1>
       <div class="sub">Fast rounds. Tap choices. Learn by doing.</div>
     </div>
-    <div style="width:260px; max-width:40vw;">
-      <div class="sub">Seed (optional)</div>
-      <input id="seed" type="text" placeholder="e.g., 2026" />
+
+    <div class="headerControls">
+      <div class="mini">
+        Sound
+        <div class="toggle" id="soundToggle" role="switch" aria-checked="false" tabindex="0">
+          <div class="toggleKnob"></div>
+        </div>
+      </div>
+
+      <div class="mini" style="gap:10px;">
+        <div>Seed</div>
+        <input id="seed" type="text" placeholder="e.g., 2026"
+               style="width:160px; max-width:38vw; padding:8px 10px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.18); color:var(--text); outline:none;" />
+      </div>
     </div>
   </div>
 </header>
@@ -258,7 +359,7 @@
         <div class="card">
           <div class="bigTitle">Welcome to Money Lab</div>
           <div class="bigBody">
-            This is a quick money game that teaches real life skills:
+            Quick money game. You’ll practice:
             <strong>pay bills</strong>, <strong>save</strong>, and <strong>invest</strong> — without boring math.
           </div>
           <div class="btnRow">
@@ -287,11 +388,19 @@
       <div class="screen" id="screen-setup">
         <div class="card">
           <div class="bigTitle">Pick your player</div>
-          <div class="bigBody">Type your name and tap Start.</div>
+          <div class="bigBody">Choose a name and a color. Then tap Start.</div>
+
           <div style="margin-top:10px;">
             <div class="sub">Name</div>
             <input id="playerName" type="text" value="Player 1" />
           </div>
+
+          <div style="margin-top:10px;">
+            <div class="sub">Avatar color</div>
+            <div class="palette" id="palette"></div>
+            <div class="tip">This color follows you in the app (and makes it feel more like a real game).</div>
+          </div>
+
           <div class="btnRow">
             <button class="secondary half" id="btnSetupBack">Back</button>
             <button class="half" id="btnSetupStart">Start Game</button>
@@ -392,8 +501,13 @@
     <!-- SIDE PANEL -->
     <section class="side" aria-label="Progress + Ledger">
       <div class="card">
+        <div class="pill" id="pillPlayer">
+          <span class="avatarDot" id="avatarDot"></span>
+          <span id="playerLabel">Player</span>
+        </div>
         <div class="pill" id="pillStreak">Streak: 0</div>
-        <div class="pill" id="pillGoal">Goal: 20 rounds</div>
+        <div class="pill" id="pillGoal">Goal: —</div>
+
         <div class="progressWrap" aria-label="Progress">
           <div class="progressBar" id="progressBar"></div>
         </div>
@@ -418,8 +532,17 @@
 </main>
 
 <script>
+/* =========================================================
+   MONEY LAB — Multi-screen + Avatar + Goals + Confetti + Sound
+   Single-file app for GitHub Pages
+========================================================= */
+
 /* ====== SETTINGS ====== */
 const TOTAL_ROUNDS = 20;
+
+const AVATAR_COLORS = [
+  "#7aa2ff", "#5ee6a8", "#ff6b7a", "#ffd36a", "#b48cff", "#58e1ff"
+];
 
 const BILLS_DECK = [
   { name: "Phone bill", min: 10, max: 35 },
@@ -471,7 +594,29 @@ const MICRO_TIPS = [
   "If you have no buffer, one surprise can wreck you."
 ];
 
-const STORAGE_KEY = "moneyLabMultiScreenSave_v1";
+// Simple “Goal Cards”
+const GOALS = [
+  {
+    id: "save250",
+    label: "Save $250 by Round 8",
+    description: "Build a safety cushion early.",
+    check: (state) => state.round >= 8 && state.savings >= 250
+  },
+  {
+    id: "noDebt10",
+    label: "No debt by Round 10",
+    description: "Avoid owing money.",
+    check: (state) => state.round >= 10 && state.debt === 0
+  },
+  {
+    id: "invest200",
+    label: "Invest $200 by Round 8",
+    description: "Start growing money early.",
+    check: (state) => state.round >= 8 && state.invest >= 200
+  }
+];
+
+const STORAGE_KEY = "moneyLabMultiScreen_v2";
 
 /* ====== UTILS ====== */
 const fmt = (n) => {
@@ -503,10 +648,92 @@ function rfloat(rng, min, max){
 }
 function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
+/* ====== SOUND (simple beeps, no external files) ====== */
+let soundOn = false;
+let audioCtx = null;
+
+function ensureAudio(){
+  if(!audioCtx){
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new Ctx();
+  }
+}
+function beep(freq=520, duration=0.06, type="sine", gain=0.05){
+  if(!soundOn) return;
+  ensureAudio();
+  const t0 = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(gain, t0);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+  osc.connect(g).connect(audioCtx.destination);
+  osc.start(t0);
+  osc.stop(t0 + duration);
+}
+function sfxTap(){ beep(520, 0.05, "triangle", 0.04); }
+function sfxWin(){ beep(740, 0.06, "sine", 0.05); setTimeout(()=>beep(980,0.07,"sine",0.05), 80); }
+function sfxLose(){ beep(240, 0.07, "sine", 0.05); setTimeout(()=>beep(190,0.08,"sine",0.05), 90); }
+
+/* ====== CONFETTI ====== */
+const confettiCanvas = document.getElementById("confetti");
+const conf = confettiCanvas.getContext("2d");
+let confettiParticles = [];
+
+function resizeConfetti(){
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeConfetti);
+resizeConfetti();
+
+function launchConfetti(intensity=120){
+  // Create simple rectangle particles
+  const w = confettiCanvas.width, h = confettiCanvas.height;
+  for(let i=0; i<intensity; i++){
+    confettiParticles.push({
+      x: Math.random() * w,
+      y: -20 - Math.random() * h * 0.25,
+      vx: (Math.random()-0.5) * 2.2,
+      vy: 2.0 + Math.random() * 3.5,
+      r: Math.random() * Math.PI,
+      vr: (Math.random()-0.5) * 0.2,
+      size: 5 + Math.random()*6,
+      life: 220 + Math.random()*120,
+      color: AVATAR_COLORS[Math.floor(Math.random()*AVATAR_COLORS.length)]
+    });
+  }
+}
+function stepConfetti(){
+  const w = confettiCanvas.width, h = confettiCanvas.height;
+  conf.clearRect(0,0,w,h);
+
+  confettiParticles = confettiParticles.filter(p => p.life > 0);
+  for(const p of confettiParticles){
+    p.life -= 1;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.r += p.vr;
+    p.vy += 0.01; // tiny gravity
+    if(p.y > h + 30) p.life = 0;
+
+    conf.save();
+    conf.translate(p.x, p.y);
+    conf.rotate(p.r);
+    conf.fillStyle = p.color;
+    conf.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.7);
+    conf.restore();
+  }
+  requestAnimationFrame(stepConfetti);
+}
+stepConfetti();
+
 /* ====== STATE ====== */
 let state = null;
 let draft = null;
 
+/* ====== UI HELPERS ====== */
 function levelName(){ return LEVELS[clamp(state.level,0,LEVELS.length-1)].name; }
 function moneyScore(){
   return Math.round((state.cash + state.savings + state.invest) - (state.debt * 1.2) + (state.streak * 10));
@@ -527,13 +754,23 @@ function hud(){
   document.getElementById("kCash").textContent = fmt(state.cash);
   document.getElementById("kSave").textContent = fmt(state.savings);
   document.getElementById("kInv").textContent = fmt(state.invest);
+
   document.getElementById("kDebtScore").innerHTML =
     `<span class="${state.debt>0 ? "bad":"sub"}">${fmt(state.debt)}</span>
      <span class="sub"> / </span>
      <span class="${score>=0 ? "good":"bad"}">${fmt(score)}</span>`;
 
   document.getElementById("pillStreak").textContent = `Streak: ${state.streak}`;
-  document.getElementById("pillGoal").textContent = `Goal: ${TOTAL_ROUNDS} rounds`;
+
+  // Goal pill
+  const g = GOALS.find(x => x.id === state.goalId);
+  const goalText = g ? g.label : "Goal: —";
+  document.getElementById("pillGoal").textContent = `Goal: ${goalText}`;
+
+  // Player pill + avatar dot
+  document.getElementById("playerLabel").textContent = state.name;
+  document.getElementById("avatarDot").style.background = state.avatarColor;
+  document.getElementById("brandDot").style.background = state.avatarColor;
 
   const pct = Math.round((state.round-1) / TOTAL_ROUNDS * 100);
   document.getElementById("progressBar").style.width = `${pct}%`;
@@ -546,11 +783,9 @@ function go(screenId){
   const next = document.getElementById(screenId);
   if(!current || !next) return;
 
-  // slide current left
   current.classList.remove("active");
   current.classList.add("left");
 
-  // reset other screens
   document.querySelectorAll(".screen").forEach(s => {
     if(s.id !== screenId && s.id !== currentScreenId){
       s.classList.remove("active");
@@ -558,48 +793,21 @@ function go(screenId){
     }
   });
 
-  // show next
   next.classList.add("active");
   next.classList.remove("left");
 
-  // clean up current after animation
-  setTimeout(() => {
-    current.classList.remove("left");
-  }, 360);
+  setTimeout(() => current.classList.remove("left"), 360);
 
   currentScreenId = screenId;
 }
 
 /* ====== GAME MECHANICS ====== */
-function plannerBonus(){
-  return (state.level >= 2) ? 10 : 0;
-}
+function plannerBonus(){ return (state.level >= 2) ? 10 : 0; }
 function softenBadCost(amount){
   const reduce = 0.04 * state.level;
   return Math.round(amount * (1 - reduce));
 }
-function improveInvestPct(pct){
-  return pct + 0.01 * state.level;
-}
-
-function newGame(){
-  state = {
-    name: "Player 1",
-    round: 1,
-    level: 0,
-    streak: 0,
-    cash: 100,
-    savings: 0,
-    invest: 0,
-    debt: 0,
-    log: []
-  };
-  draft = null;
-  setTip(MICRO_TIPS[0]);
-  log("New game started. You start with $100 cash.");
-  hud();
-  go("screen-intro");
-}
+function improveInvestPct(pct){ return pct + 0.01 * state.level; }
 
 function buildBills(rng){
   const nBills = rint(rng, 2, 4);
@@ -615,12 +823,62 @@ function buildBills(rng){
   return { items: picked, total };
 }
 
+/* ====== GOALS ====== */
+function pickGoal(rng){
+  const g = GOALS[rint(rng, 0, GOALS.length - 1)];
+  return g.id;
+}
+function checkGoalCompletion(){
+  if(state.goalCompleted) return false;
+  const g = GOALS.find(x => x.id === state.goalId);
+  if(!g) return false;
+  if(g.check(state)){
+    state.goalCompleted = true;
+    return true;
+  }
+  return false;
+}
+
+/* ====== NEW GAME ====== */
+function newGame(){
+  state = {
+    name: "Player 1",
+    avatarColor: AVATAR_COLORS[0],
+    round: 1,
+    level: 0,
+    streak: 0,
+    cash: 100,
+    savings: 0,
+    invest: 0,
+    debt: 0,
+    log: [],
+
+    goalId: null,
+    goalCompleted: false
+  };
+  draft = null;
+
+  const rng = getRoundRng(1);
+  state.goalId = pickGoal(rng);
+
+  setTip(MICRO_TIPS[0]);
+  log("New game started. You start with $100 cash.");
+  const g = GOALS.find(x => x.id === state.goalId);
+  if(g){
+    log(`Goal card: ${g.label}`);
+    log(`Goal hint: ${g.description}`);
+  }
+
+  hud();
+  go("screen-intro");
+}
+
+/* ====== ROUND FLOW ====== */
 function startRound(){
   const rng = getRoundRng(state.round);
 
   const job = PAYCHECKS[rint(rng, 0, PAYCHECKS.length - 1)];
   const paycheck = rint(rng, job.min, job.max);
-
   const bills = buildBills(rng);
 
   draft = {
@@ -637,7 +895,6 @@ function startRound(){
     surpriseText: "",
     choiceResult: null,
 
-    // result snapshots
     beforeScore: moneyScore(),
     afterScore: null,
     saveBefore: null, saveAfter: null,
@@ -645,7 +902,6 @@ function startRound(){
     invPct: 0
   };
 
-  // Fill Paid/Bills screen UI
   document.getElementById("paidText").innerHTML =
     `Job: <strong>${draft.jobName}</strong><br/>Paycheck: <strong>${fmt(draft.paycheck)}</strong>` +
     (plannerBonus() ? `<br/>Bonus (perk): <strong>+${fmt(plannerBonus())}</strong>` : "");
@@ -661,6 +917,7 @@ function startRound(){
   document.getElementById("billTotalTip").innerHTML =
     `Total bills: <strong>${fmt(draft.billsTotal)}</strong>`;
 
+  sfxTap();
   go("screen-paidBills");
 }
 
@@ -695,13 +952,12 @@ function applyPlan(planKey){
   draft.planName = (planKey === "safe" ? "Safe" : planKey === "balanced" ? "Balanced" : "Bold");
   draft.save = save; draft.invest = inv; draft.spend = spend;
 
-  // Draw surprise immediately and auto-advance
+  sfxTap();
+
   drawSurprise();
 
-  // Auto-advance to surprise after a short delay (for feel)
-  setTimeout(() => {
-    go("screen-surprise");
-  }, 250);
+  // auto-advance to surprise
+  setTimeout(() => go("screen-surprise"), 220);
 }
 
 function drawSurprise(){
@@ -731,8 +987,7 @@ function drawSurprise(){
   }
 
   if(s.kind === "market"){
-    let pct = rfloat(draft.rng, s.min, s.max);
-    pct = improveInvestPct(pct);
+    let pct = improveInvestPct(rfloat(draft.rng, s.min, s.max));
     draft.surpriseText = `Your invest money changed by ${(pct*100).toFixed(1)}%.`;
     state.invest = Math.round(state.invest * (1 + pct));
   }
@@ -746,6 +1001,8 @@ function drawSurprise(){
 
   document.getElementById("surpriseText").innerHTML =
     `<strong>${s.name}</strong><br/>${draft.surpriseText}`;
+
+  hud();
 }
 
 function resolveChoice(choice){
@@ -768,8 +1025,8 @@ function resolveChoice(choice){
     draft.choiceResult = "You stayed in. ($0)";
   }
 
-  // Auto-advance to results after short delay
-  setTimeout(() => showResults(), 350);
+  sfxTap();
+  setTimeout(() => showResults(), 320);
 }
 
 function applyGrowthAndInterest(){
@@ -789,9 +1046,8 @@ function applyGrowthAndInterest(){
 }
 
 function showResults(){
-  // If we had a choice surprise, ensure it was chosen
   if(draft.surprise && draft.surprise.kind === "choice" && !draft.choiceResult){
-    return; // wait
+    return;
   }
 
   applyGrowthAndInterest();
@@ -799,11 +1055,11 @@ function showResults(){
   const after = moneyScore();
   draft.afterScore = after;
 
-  // streak rule (simple)
+  // streak
   const goodRound = (state.debt === 0) || (draft.planName !== "Bold" && state.debt < 200);
+  const prevStreak = state.streak;
   state.streak = goodRound ? state.streak + 1 : 0;
 
-  // Update result UI
   const delta = after - draft.beforeScore;
   const sign = delta >= 0 ? "+" : "-";
   const cls = delta >= 0 ? "good" : "bad";
@@ -820,7 +1076,7 @@ function showResults(){
   document.getElementById("resultTip").textContent = "Tip: " + tip;
   setTip(tip);
 
-  // log
+  // ledger
   log(`\nROUND ${state.round}/${TOTAL_ROUNDS}`);
   log(`Paid: ${draft.jobName} (+${fmt(draft.paycheck)})${plannerBonus() ? ` + bonus (+${fmt(plannerBonus())})` : ""}`);
   log(`Bills total: -${fmt(draft.billsTotal)} | ${draft.billsItems.map(b=>`${b.name} ${fmt(b.amount)}`).join(", ")}`);
@@ -832,9 +1088,34 @@ function showResults(){
   if(state.debt > 0) log(`Debt: ${fmt(state.debt)}`);
   log(`Score: ${fmt(after)} | Streak: ${state.streak}`);
 
-  hud();
+  // Streak confetti milestones
+  if(state.streak === 3 || state.streak === 5 || state.streak === 10){
+    launchConfetti(160);
+    sfxWin();
+    log(`Streak bonus moment: ${state.streak} in a row!`);
+  } else {
+    // simple audio feedback
+    if(delta >= 0) sfxWin();
+    else sfxLose();
+  }
 
+  // Goal completion check (also triggers confetti)
+  const justCompletedGoal = checkGoalCompletion();
+  if(justCompletedGoal){
+    launchConfetti(220);
+    sfxWin();
+    const g = GOALS.find(x => x.id === state.goalId);
+    if(g){
+      log(`GOAL COMPLETE: ${g.label}`);
+    }
+    setTip("Goal complete! Keep going.");
+  }
+
+  hud();
   go("screen-result");
+
+  // If surprise wasn't a choice, auto-advance to results after ~0.8s from showing surprise
+  // (Handled by observer below)
 }
 
 function nextRound(){
@@ -844,11 +1125,13 @@ function nextRound(){
   if(state.round > TOTAL_ROUNDS){
     const score = moneyScore();
     document.getElementById("finishText").innerHTML =
-      `You finished <strong>${TOTAL_ROUNDS}</strong> rounds.<br/>Final Score: <strong class="${score>=0?"good":"bad"}">${fmt(score)}</strong>`;
+      `You finished <strong>${TOTAL_ROUNDS}</strong> rounds.<br/>Final Score: <strong class="${score>=0?"good":"bad"}">${fmt(score)}</strong>` +
+      `<br/><br/>Goal status: <strong>${state.goalCompleted ? "Completed" : "Not completed (try again!)"}</strong>`;
     go("screen-finish");
     return;
   }
 
+  hud();
   go("screen-startRound");
 }
 
@@ -866,13 +1149,15 @@ function levelUp(){
   log(`Leveled up: ${LEVELS[state.level].name} (-${fmt(cost)})`);
   log(`Perk: ${LEVELS[state.level].perk}`);
   setTip(LEVELS[state.level].perk);
+  sfxTap();
   hud();
 }
 
 /* ====== SAVE/LOAD ====== */
 function saveGame(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ state }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, soundOn }));
   log("Saved game to this browser.");
+  sfxTap();
 }
 function loadGame(){
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -880,6 +1165,8 @@ function loadGame(){
   try{
     const parsed = JSON.parse(raw);
     state = parsed.state;
+    soundOn = !!parsed.soundOn;
+    setSoundUI();
     draft = null;
     hud();
     log("\nLoaded saved game.");
@@ -894,26 +1181,71 @@ function resetGame(){
   newGame();
 }
 
+/* ====== AVATAR SETUP ====== */
+function buildPalette(){
+  const p = document.getElementById("palette");
+  p.innerHTML = "";
+  AVATAR_COLORS.forEach((c, idx) => {
+    const d = document.createElement("div");
+    d.className = "colorPick";
+    d.style.background = c;
+    d.title = c;
+    d.onclick = () => {
+      sfxTap();
+      state.avatarColor = c;
+      document.querySelectorAll(".colorPick").forEach(x => x.classList.remove("selected"));
+      d.classList.add("selected");
+      hud();
+    };
+    if(idx === 0) d.classList.add("selected");
+    p.appendChild(d);
+  });
+}
+
+/* ====== SOUND TOGGLE UI ====== */
+function setSoundUI(){
+  const el = document.getElementById("soundToggle");
+  if(soundOn){
+    el.classList.add("on");
+    el.setAttribute("aria-checked", "true");
+  }else{
+    el.classList.remove("on");
+    el.setAttribute("aria-checked", "false");
+  }
+}
+function toggleSound(){
+  soundOn = !soundOn;
+  setSoundUI();
+  if(soundOn){
+    // on first enable, create context and play a tiny confirm beep
+    ensureAudio();
+    sfxTap();
+  }
+}
+
 /* ====== BUTTONS ====== */
-document.getElementById("btnIntroNext").onclick = () => go("screen-setup");
-document.getElementById("btnIntroHow").onclick = () => go("screen-how");
+document.getElementById("btnIntroNext").onclick = () => { sfxTap(); go("screen-setup"); };
+document.getElementById("btnIntroHow").onclick = () => { sfxTap(); go("screen-how"); };
 
-document.getElementById("btnHowBack").onclick = () => go("screen-intro");
-document.getElementById("btnHowNext").onclick = () => go("screen-setup");
+document.getElementById("btnHowBack").onclick = () => { sfxTap(); go("screen-intro"); };
+document.getElementById("btnHowNext").onclick = () => { sfxTap(); go("screen-setup"); };
 
-document.getElementById("btnSetupBack").onclick = () => go("screen-intro");
+document.getElementById("btnSetupBack").onclick = () => { sfxTap(); go("screen-intro"); };
 document.getElementById("btnSetupStart").onclick = () => {
   state.name = (document.getElementById("playerName").value.trim() || "Player 1");
   log(`Player set: ${state.name}`);
   hud();
+  sfxTap();
   go("screen-startRound");
 };
 
 document.getElementById("btnStartRound").onclick = () => startRound();
+
 document.getElementById("btnPaidContinue").onclick = () => {
   const after = Math.max(0, state.cash + draft.paycheck + plannerBonus() - draft.billsTotal);
   document.getElementById("planPreview").innerHTML =
     `After bills, you’ll have about <strong>${fmt(after)}</strong>. Pick a plan:`;
+  sfxTap();
   go("screen-plan");
 };
 
@@ -924,7 +1256,7 @@ document.getElementById("planBold").onclick = () => applyPlan("bold");
 document.getElementById("btnGoOut").onclick = () => resolveChoice("go");
 document.getElementById("btnStayIn").onclick = () => resolveChoice("stay");
 
-// If surprise isn't a choice, auto-advance to results after 0.8s
+// Auto-advance from surprise to results if not a choice
 const surpriseObserver = new MutationObserver(() => {
   if(!draft || !draft.surprise) return;
   if(draft.surprise.kind !== "choice"){
@@ -933,7 +1265,7 @@ const surpriseObserver = new MutationObserver(() => {
 });
 surpriseObserver.observe(document.getElementById("surpriseText"), { childList:true, subtree:true });
 
-document.getElementById("btnNextRound").onclick = () => nextRound();
+document.getElementById("btnNextRound").onclick = () => { sfxTap(); nextRound(); };
 document.getElementById("btnPlayAgain").onclick = () => resetGame();
 document.getElementById("btnSaveRun").onclick = () => saveGame();
 
@@ -942,9 +1274,20 @@ document.getElementById("btnSave").onclick = () => saveGame();
 document.getElementById("btnLoad").onclick = () => loadGame();
 document.getElementById("btnReset").onclick = () => resetGame();
 
+document.getElementById("soundToggle").onclick = () => toggleSound();
+document.getElementById("soundToggle").addEventListener("keydown", (e) => {
+  if(e.key === "Enter" || e.key === " "){
+    e.preventDefault();
+    toggleSound();
+  }
+});
+
 /* ====== BOOT ====== */
 newGame();
+buildPalette();
 document.getElementById("screen-intro").classList.add("active");
+setSoundUI();
+hud();
 </script>
 </body>
 </html>
