@@ -47,7 +47,7 @@
 
     .hud{
       display:grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(7, 1fr);
       gap:10px;
       margin-bottom: 14px;
     }
@@ -85,7 +85,7 @@
       box-shadow: var(--shadow);
       overflow:hidden;
       position: relative;
-      min-height: 440px;
+      min-height: 460px;
     }
     .side{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -266,7 +266,7 @@
       box-shadow: 0 0 0 3px rgba(255,255,255,.10);
     }
 
-    /* Header mini controls */
+    /* Header controls */
     .headerControls{
       display:flex; align-items:center; gap:10px; flex-wrap:wrap;
       justify-content:flex-end;
@@ -277,7 +277,7 @@
       background: rgba(0,0,0,.18);
       padding: 8px 10px;
       border-radius: 999px;
-      color: var(--muted);
+      color:var(--muted);
       font-size: 12px;
       user-select:none;
     }
@@ -309,6 +309,55 @@
       pointer-events:none;
       z-index:999;
     }
+
+    /* SHOP */
+    .shopGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+    @media (min-width: 860px){
+      .shopGrid{ grid-template-columns: 1fr 1fr; }
+    }
+    .shopItem{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.16);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .shopTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    }
+    .shopName{ font-weight:950; }
+    .priceTag{
+      font-weight:950;
+      padding: 4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      white-space:nowrap;
+    }
+    .shopDesc{ color: var(--muted); font-size: 12px; line-height:1.35; margin-top:6px; }
+    .previewBox{
+      margin-top:10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      padding: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .swatchRow{ display:flex; gap:8px; flex-wrap:wrap; }
+    .swatch{
+      width:18px; height:18px; border-radius:6px;
+      border:1px solid rgba(255,255,255,.18);
+    }
   </style>
 </head>
 
@@ -322,7 +371,7 @@
         <span class="brandDot" id="brandDot"></span>
         Money Lab — Tap Card Game
       </h1>
-      <div class="sub">Fast rounds. Tap choices. Learn by doing.</div>
+      <div class="sub">Quick rounds. Tap choices. Learn money basics.</div>
     </div>
 
     <div class="headerControls">
@@ -335,8 +384,8 @@
 
       <div class="mini" style="gap:10px;">
         <div>Seed</div>
-        <input id="seed" type="text" placeholder="e.g., 2026"
-               style="width:160px; max-width:38vw; padding:8px 10px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.18); color:var(--text); outline:none;" />
+        <input id="seed" type="text" placeholder="optional (ex: 2026)"
+               style="width:170px; max-width:44vw; padding:8px 10px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.18); color:var(--text); outline:none;" />
       </div>
     </div>
   </div>
@@ -346,49 +395,66 @@
   <section class="hud" aria-label="HUD">
     <div class="kpi"><div class="t">Round</div><div class="v" id="kRound">—</div></div>
     <div class="kpi"><div class="t">Level</div><div class="v" id="kLevel">—</div></div>
-    <div class="kpi"><div class="t">Cash</div><div class="v" id="kCash">—</div></div>
-    <div class="kpi"><div class="t">Savings</div><div class="v" id="kSave">—</div></div>
-    <div class="kpi"><div class="t">Invest</div><div class="v" id="kInv">—</div></div>
-    <div class="kpi"><div class="t">Debt / Score</div><div class="v" id="kDebtScore">—</div></div>
+    <div class="kpi"><div class="t">Pocket</div><div class="v" id="kCash">—</div></div>
+    <div class="kpi"><div class="t">Save Jar</div><div class="v" id="kSave">—</div></div>
+    <div class="kpi"><div class="t">Grow Money</div><div class="v" id="kInv">—</div></div>
+    <div class="kpi"><div class="t">Owe / Score</div><div class="v" id="kDebtScore">—</div></div>
+    <div class="kpi"><div class="t">Points</div><div class="v" id="kPoints">—</div></div>
   </section>
 
   <div class="grid">
-    <!-- MAIN (MULTI-SCREEN) -->
+    <!-- MAIN -->
     <section class="panel" aria-label="App screens">
+      <!-- INTRO -->
       <div class="screen" id="screen-intro">
         <div class="card">
           <div class="bigTitle">Welcome to Money Lab</div>
           <div class="bigBody">
-            Quick money game. You’ll practice:
-            <strong>pay bills</strong>, <strong>save</strong>, and <strong>invest</strong> — without boring math.
+            This is a quick money game.<br/>
+            You’ll practice <strong>paying bills</strong>, <strong>saving</strong>, and <strong>growing money</strong>.
           </div>
           <div class="btnRow">
-            <button class="half" id="btnIntroNext">Enter</button>
+            <button class="half" id="btnIntroNext">Play</button>
             <button class="secondary half" id="btnIntroHow">How to play</button>
           </div>
+          <div class="tip">You don’t need to be “good at math” to win. You just need a plan.</div>
         </div>
       </div>
 
+      <!-- HOW -->
       <div class="screen" id="screen-how">
         <div class="card">
-          <div class="bigTitle">How to play (3 steps)</div>
+          <div class="bigTitle">How to play</div>
+
           <ul class="clean">
             <li>You get paid.</li>
-            <li>You pay bills.</li>
-            <li>You tap a plan (Safe / Balanced / Bold), then handle a surprise.</li>
+            <li>You pay your bills.</li>
+            <li>You pick a plan, then you get a surprise card.</li>
           </ul>
-          <div class="tip">Tip: Saving a little first makes surprises hurt less.</div>
+
+          <div class="tip">
+            <strong>Your goal:</strong> keep bills paid, build savings, and try not to owe money.
+          </div>
+
+          <div class="tip">
+            <strong>Plans:</strong><br/>
+            Safe = save more<br/>
+            Balanced = split money (save + grow)<br/>
+            Bold = grow more (riskier)
+          </div>
+
           <div class="btnRow">
             <button class="secondary half" id="btnHowBack">Back</button>
-            <button class="half" id="btnHowNext">Continue</button>
+            <button class="half" id="btnHowNext">Next</button>
           </div>
         </div>
       </div>
 
+      <!-- SETUP -->
       <div class="screen" id="screen-setup">
         <div class="card">
-          <div class="bigTitle">Pick your player</div>
-          <div class="bigBody">Choose a name and a color. Then tap Start.</div>
+          <div class="bigTitle">Make your player</div>
+          <div class="bigBody">Pick a name and a color. Then start.</div>
 
           <div style="margin-top:10px;">
             <div class="sub">Name</div>
@@ -396,28 +462,34 @@
           </div>
 
           <div style="margin-top:10px;">
-            <div class="sub">Avatar color</div>
+            <div class="sub">Color</div>
             <div class="palette" id="palette"></div>
-            <div class="tip">This color follows you in the app (and makes it feel more like a real game).</div>
+            <div class="tip">This is just for style. It doesn’t change the game.</div>
           </div>
 
           <div class="btnRow">
             <button class="secondary half" id="btnSetupBack">Back</button>
-            <button class="half" id="btnSetupStart">Start Game</button>
+            <button class="half" id="btnSetupStart">Start</button>
           </div>
         </div>
       </div>
 
+      <!-- START ROUND -->
       <div class="screen" id="screen-startRound">
         <div class="card">
-          <div class="bigTitle">Ready?</div>
-          <div class="bigBody">Tap Start Round. You’ll get paid, pay bills, and make a quick choice.</div>
+          <div class="bigTitle">Ready for the next round?</div>
+          <div class="bigBody">
+            Tap <strong>Start Round</strong> to get paid and see your bills.
+          </div>
           <div class="btnRow">
             <button class="half" id="btnStartRound">Start Round</button>
+            <button class="secondary half" id="btnOpenShop1">Shop</button>
           </div>
+          <div class="tip">Points come from smart choices and streaks. Spend points in the Shop for fun styles.</div>
         </div>
       </div>
 
+      <!-- PAID + BILLS -->
       <div class="screen" id="screen-paidBills">
         <div class="card">
           <div class="bigTitle">You got paid</div>
@@ -425,17 +497,18 @@
 
           <div class="hr"></div>
 
-          <div class="bigTitle">Bills</div>
-          <div class="bigBody">Here’s what you have to pay today:</div>
+          <div class="bigTitle">Bills to pay</div>
+          <div class="bigBody">These come out first.</div>
           <div class="billList" id="billList"></div>
           <div class="tip" id="billTotalTip">Total bills: —</div>
 
           <div class="btnRow">
-            <button class="half" id="btnPaidContinue">Continue</button>
+            <button class="half" id="btnPaidContinue">Next</button>
           </div>
         </div>
       </div>
 
+      <!-- PLAN -->
       <div class="screen" id="screen-plan">
         <div class="card">
           <div class="bigTitle">Pick a plan</div>
@@ -444,51 +517,94 @@
           <div class="choiceGrid">
             <button id="planSafe">
               <div>SAFE</div>
-              <div class="sub">Save a lot. Invest a little. Spend a little.</div>
+              <div class="sub">Save more. Grow a little. Keep it chill.</div>
             </button>
             <button id="planBalanced">
               <div>BALANCED</div>
-              <div class="sub">Save some. Invest some. Spend some.</div>
+              <div class="sub">Split it. Save some + grow some.</div>
             </button>
             <button id="planBold">
               <div>BOLD</div>
-              <div class="sub">Invest a lot. Save a little. Spend a little.</div>
+              <div class="sub">Grow more. Bigger risk.</div>
             </button>
           </div>
 
-          <div class="tip">Auto-advance: after you tap a plan, you’ll go straight to the surprise card.</div>
+          <div class="tip">After you tap a plan, your Surprise card pops up.</div>
         </div>
       </div>
 
+      <!-- SURPRISE -->
       <div class="screen" id="screen-surprise">
         <div class="card">
           <div class="bigTitle">Surprise card</div>
           <div class="bigBody" id="surpriseText">—</div>
 
-          <div class="choiceGrid" id="surpriseChoices" style="display:none;">
-            <button id="btnGoOut"><div>Go out</div><div class="sub" id="goOutCost">Costs —</div></button>
-            <button id="btnStayIn" class="secondary"><div>Stay in</div><div class="sub">Costs $0</div></button>
-            <button class="secondary" disabled><div>Pick one</div><div class="sub">Then we move on.</div></button>
+          <div class="tip" id="surpriseHelp" style="display:none;">
+            Surprise cards are random. Sometimes you gain money. Sometimes you lose money. Keep going.
           </div>
 
-          <div class="tip" id="surpriseTip">After this, we show your results.</div>
+          <div class="choiceGrid" id="surpriseChoices" style="display:none;">
+            <button id="btnGoOut">
+              <div>Go out</div>
+              <div class="sub" id="goOutCost">Costs —</div>
+            </button>
+            <button id="btnStayIn" class="secondary">
+              <div>Stay in</div>
+              <div class="sub">Costs $0</div>
+            </button>
+            <button class="secondary" disabled>
+              <div>Pick one</div>
+              <div class="sub">Then we move on.</div>
+            </button>
+          </div>
+
+          <div class="tip" id="surpriseTip">Next, you’ll see how you did this round.</div>
         </div>
       </div>
 
+      <!-- RESULTS -->
       <div class="screen" id="screen-result">
         <div class="card">
-          <div class="bigTitle">Round results</div>
+          <div class="bigTitle">Round recap</div>
           <div class="bigBody" id="resultText">—</div>
           <div class="tip" id="resultTip">—</div>
           <div class="btnRow">
             <button class="half" id="btnNextRound">Next Round</button>
+            <button class="secondary half" id="btnOpenShop2">Shop</button>
           </div>
         </div>
       </div>
 
+      <!-- SHOP -->
+      <div class="screen" id="screen-shop">
+        <div class="card">
+          <div class="bigTitle">Shop</div>
+          <div class="bigBody">
+            Spend points on fun upgrades (style only). This does not change your money.
+          </div>
+
+          <div class="previewBox">
+            <div>
+              <div style="font-weight:950;">Your points</div>
+              <div class="sub">Buy themes and name titles.</div>
+            </div>
+            <div class="priceTag" id="shopPoints">—</div>
+          </div>
+
+          <div class="shopGrid" id="shopGrid"></div>
+
+          <div class="btnRow">
+            <button class="secondary half" id="btnShopBack">Back</button>
+            <button class="danger half" id="btnShopReset">Reset Shop</button>
+          </div>
+          <div class="tip">Press Save to keep your unlocks on this device.</div>
+        </div>
+      </div>
+
+      <!-- FINISH -->
       <div class="screen" id="screen-finish">
         <div class="card">
-          <div class="bigTitle">Game complete</div>
+          <div class="bigTitle">Game over</div>
           <div class="bigBody" id="finishText">—</div>
           <div class="btnRow">
             <button class="danger half" id="btnPlayAgain">Play again</button>
@@ -498,8 +614,8 @@
       </div>
     </section>
 
-    <!-- SIDE PANEL -->
-    <section class="side" aria-label="Progress + Ledger">
+    <!-- SIDE -->
+    <section class="side" aria-label="Progress + Notes">
       <div class="card">
         <div class="pill" id="pillPlayer">
           <span class="avatarDot" id="avatarDot"></span>
@@ -507,6 +623,7 @@
         </div>
         <div class="pill" id="pillStreak">Streak: 0</div>
         <div class="pill" id="pillGoal">Goal: —</div>
+        <div class="pill">Points: <span id="pillPoints">0</span></div>
 
         <div class="progressWrap" aria-label="Progress">
           <div class="progressBar" id="progressBar"></div>
@@ -517,12 +634,12 @@
       <div class="hr"></div>
 
       <div class="card">
-        <div class="bigTitle" style="font-size:16px;">Ledger</div>
+        <div class="bigTitle" style="font-size:16px;">What happened?</div>
         <div id="log" class="log"></div>
       </div>
 
       <div class="btnRow">
-        <button class="secondary third" id="btnSkill">Level up money skills</button>
+        <button class="secondary third" id="btnSkill">Level up</button>
         <button class="secondary third" id="btnSave">Save</button>
         <button class="secondary third" id="btnLoad">Load</button>
         <button class="danger third" id="btnReset">Reset</button>
@@ -533,16 +650,13 @@
 
 <script>
 /* =========================================================
-   MONEY LAB — Multi-screen + Avatar + Goals + Confetti + Sound
-   Single-file app for GitHub Pages
+   MONEY LAB — Middle School Tone + Shop (single-file)
 ========================================================= */
 
-/* ====== SETTINGS ====== */
+/* ====== SETTINGS (game math) ====== */
 const TOTAL_ROUNDS = 20;
 
-const AVATAR_COLORS = [
-  "#7aa2ff", "#5ee6a8", "#ff6b7a", "#ffd36a", "#b48cff", "#58e1ff"
-];
+const AVATAR_COLORS = ["#7aa2ff", "#5ee6a8", "#ff6b7a", "#ffd36a", "#b48cff", "#58e1ff"];
 
 const BILLS_DECK = [
   { name: "Phone bill", min: 10, max: 35 },
@@ -553,17 +667,17 @@ const BILLS_DECK = [
   { name: "Family errand", min: 6, max: 20 }
 ];
 
-const SAVINGS_GROWTH = 0.01;
-const INV_MIN = -0.06;
-const INV_MAX =  0.12;
-const DEBT_INTEREST = 0.03;
+const SAVINGS_GROWTH = 0.01;      // savings grows 1% per round
+const INV_MIN = -0.06;            // investing can go down...
+const INV_MAX =  0.12;            // ...or up
+const DEBT_INTEREST = 0.03;       // debt grows 3% per round
 
 const LEVELS = [
-  { name: "Rookie",    perk: "No perk yet. You’re learning.",               cost: 0 },
-  { name: "Saver",     perk: "Bad surprises cost a little less.",          cost: 250 },
-  { name: "Planner",   perk: "You get a small bonus each round.",          cost: 350 },
-  { name: "Investor",  perk: "Your invest results are slightly better.",   cost: 450 },
-  { name: "Boss",      perk: "You lose less on bad luck days.",            cost: 600 }
+  { name: "Starter", perk: "You’re learning the basics.", cost: 0 },
+  { name: "Saver",   perk: "Bad surprises hurt a little less.", cost: 250 },
+  { name: "Planner", perk: "You get a small bonus each round.", cost: 350 },
+  { name: "Investor",perk: "Your grow-money results are a bit better.", cost: 450 },
+  { name: "Boss",    perk: "You lose less on rough days.", cost: 600 }
 ];
 
 const PAYCHECKS = [
@@ -575,50 +689,53 @@ const PAYCHECKS = [
 ];
 
 const SURPRISES = [
-  { name: "Phone screen cracked", kind:"cash", min:-70, max:-30, tip:"Stuff breaks. Savings helps." },
-  { name: "Friend invites you out", kind:"choice", cost:25, tip:"Fun is fine — plan for it." },
-  { name: "Lost something (replace it)", kind:"cash", min:-45, max:-15, tip:"Small leaks add up." },
-  { name: "You got a small bonus", kind:"cash", min:25, max:80, tip:"Don’t blow wins — build wins." },
-  { name: "Market dip", kind:"market", min:-0.08, max:-0.03, tip:"Investing goes down sometimes. That’s normal." },
+  { name: "Cracked phone screen", kind:"cash", min:-70, max:-30, tip:"Stuff breaks. Savings helps." },
+  { name: "Friend wants to go out", kind:"choice", cost:25, tip:"Fun is fine. Just plan for it." },
+  { name: "Lost something", kind:"cash", min:-45, max:-15, tip:"Little losses add up." },
+  { name: "Small bonus!", kind:"cash", min:25, max:80, tip:"Don’t waste wins. Build wins." },
+  { name: "Market dip", kind:"market", min:-0.08, max:-0.03, tip:"Grow money can go down sometimes. That’s normal." },
   { name: "Market pop", kind:"market", min:0.03, max:0.10, tip:"Good days happen. Don’t get reckless." },
-  { name: "Someone pays you back", kind:"cash", min:20, max:65, tip:"When money returns, save some." },
-  { name: "Emergency bill", kind:"cash", min:-60, max:-20, tip:"Unexpected bills are real. Buffer matters." }
+  { name: "Someone paid you back", kind:"cash", min:20, max:65, tip:"Save some when money comes back." },
+  { name: "Unexpected bill", kind:"cash", min:-60, max:-20, tip:"Surprise bills are real. A buffer matters." }
 ];
 
 const MICRO_TIPS = [
   "Save a little first. Future you will be grateful.",
-  "Debt grows if you ignore it.",
-  "Investing can go up or down. That’s normal.",
-  "A plan beats vibes every time.",
-  "Cash is for now. Savings is for later.",
-  "If you have no buffer, one surprise can wreck you."
+  "Owing money grows if you ignore it.",
+  "Grow money can go up or down. That’s normal.",
+  "A plan beats guessing.",
+  "Pocket money is for now. Save Jar is for later.",
+  "One surprise can hurt if you have zero savings."
 ];
 
-// Simple “Goal Cards”
 const GOALS = [
-  {
-    id: "save250",
-    label: "Save $250 by Round 8",
-    description: "Build a safety cushion early.",
-    check: (state) => state.round >= 8 && state.savings >= 250
-  },
-  {
-    id: "noDebt10",
-    label: "No debt by Round 10",
-    description: "Avoid owing money.",
-    check: (state) => state.round >= 10 && state.debt === 0
-  },
-  {
-    id: "invest200",
-    label: "Invest $200 by Round 8",
-    description: "Start growing money early.",
-    check: (state) => state.round >= 8 && state.invest >= 200
-  }
+  { id: "save250", label: "Save $250 by Round 8", description: "Build a safety cushion early.",
+    check: (s) => s.round >= 8 && s.savings >= 250 },
+  { id: "noDebt10", label: "Owe $0 by Round 10", description: "Try not to owe money.",
+    check: (s) => s.round >= 10 && s.debt === 0 },
+  { id: "invest200", label: "Grow $200 by Round 8", description: "Put money into Grow Money early.",
+    check: (s) => s.round >= 8 && s.invest >= 200 }
 ];
 
-const STORAGE_KEY = "moneyLabMultiScreen_v2";
+/* SHOP ITEMS (style only) */
+const SHOP_ITEMS = [
+  { id:"theme_midnight", type:"theme", name:"Theme: Midnight", price:60,
+    desc:"Darker background vibe.", apply:()=>setTheme("midnight"), preview:{label:"Midnight", swatches:["#070a16","#1a2453","#7aa2ff"]}},
+  { id:"theme_sunset", type:"theme", name:"Theme: Sunset", price:60,
+    desc:"Warm background vibe.", apply:()=>setTheme("sunset"), preview:{label:"Sunset", swatches:["#1b0b16","#4a2042","#ffd36a"]}},
+  { id:"theme_ocean", type:"theme", name:"Theme: Ocean", price:60,
+    desc:"Cool blue background vibe.", apply:()=>setTheme("ocean"), preview:{label:"Ocean", swatches:["#07121a","#153a57","#58e1ff"]}},
+  { id:"title_saver", type:"title", name:"Title: Saver", price:40,
+    desc:"Adds “Saver” next to your name.", apply:()=>setTitle("Saver"), preview:{label:"Saver", swatches:["#5ee6a8"]}},
+  { id:"title_investor", type:"title", name:"Title: Investor", price:40,
+    desc:"Adds “Investor” next to your name.", apply:()=>setTitle("Investor"), preview:{label:"Investor", swatches:["#7aa2ff"]}},
+  { id:"title_boss", type:"title", name:"Title: Boss", price:80,
+    desc:"Adds “Boss” next to your name.", apply:()=>setTitle("Boss"), preview:{label:"Boss", swatches:["#ffd36a"]}}
+];
 
-/* ====== UTILS ====== */
+const STORAGE_KEY = "moneyLab_middleSchool_shop_v1";
+
+/* ====== UTIL ====== */
 const fmt = (n) => {
   const sign = n < 0 ? "-" : "";
   const abs = Math.abs(Math.round(n));
@@ -640,15 +757,11 @@ function getRoundRng(round){
   if(!Number.isFinite(n)) return Math.random;
   return mulberry32((n + round * 101) >>> 0);
 }
-function rint(rng, min, max){
-  return Math.floor(rng() * (max - min + 1)) + min;
-}
-function rfloat(rng, min, max){
-  return rng() * (max - min) + min;
-}
+function rint(rng, min, max){ return Math.floor(rng() * (max - min + 1)) + min; }
+function rfloat(rng, min, max){ return rng() * (max - min) + min; }
 function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
-/* ====== SOUND (simple beeps, no external files) ====== */
+/* ====== SOUND ====== */
 let soundOn = false;
 let audioCtx = null;
 
@@ -689,7 +802,6 @@ window.addEventListener("resize", resizeConfetti);
 resizeConfetti();
 
 function launchConfetti(intensity=120){
-  // Create simple rectangle particles
   const w = confettiCanvas.width, h = confettiCanvas.height;
   for(let i=0; i<intensity; i++){
     confettiParticles.push({
@@ -715,7 +827,7 @@ function stepConfetti(){
     p.x += p.vx;
     p.y += p.vy;
     p.r += p.vr;
-    p.vy += 0.01; // tiny gravity
+    p.vy += 0.01;
     if(p.y > h + 30) p.life = 0;
 
     conf.save();
@@ -729,26 +841,53 @@ function stepConfetti(){
 }
 stepConfetti();
 
+/* ====== THEMES (style only) ====== */
+function setTheme(themeName){
+  const b = document.body;
+  if(themeName === "midnight"){
+    b.style.background = "radial-gradient(1200px 900px at 20% 10%, #1a2453 0%, #070a16 55%)";
+  }else if(themeName === "sunset"){
+    b.style.background = "radial-gradient(1200px 900px at 20% 10%, #4a2042 0%, #1b0b16 58%)";
+  }else if(themeName === "ocean"){
+    b.style.background = "radial-gradient(1200px 900px at 20% 10%, #153a57 0%, #07121a 58%)";
+  }else{
+    b.style.background = "radial-gradient(1200px 900px at 20% 10%, #1a2453 0%, #070a16 55%)";
+  }
+  state.cosmetics.activeTheme = themeName;
+}
+
+/* ====== TITLES (style only) ====== */
+function setTitle(title){
+  state.cosmetics.activeTitle = title;
+  hud();
+}
+
 /* ====== STATE ====== */
 let state = null;
 let draft = null;
 
 /* ====== UI HELPERS ====== */
 function levelName(){ return LEVELS[clamp(state.level,0,LEVELS.length-1)].name; }
+
 function moneyScore(){
+  // Simple score: total money - owe + streak boost
   return Math.round((state.cash + state.savings + state.invest) - (state.debt * 1.2) + (state.streak * 10));
 }
+
 function log(line){
   state.log.push(line);
   const el = document.getElementById("log");
   el.textContent = state.log.join("\n");
   el.scrollTop = el.scrollHeight;
 }
+
 function setTip(text){
   document.getElementById("tipBox").textContent = "Tip: " + text;
 }
+
 function hud(){
   const score = moneyScore();
+
   document.getElementById("kRound").textContent = `${state.round}/${TOTAL_ROUNDS}`;
   document.getElementById("kLevel").textContent = `${levelName()} (Lv ${state.level+1})`;
   document.getElementById("kCash").textContent = fmt(state.cash);
@@ -760,28 +899,39 @@ function hud(){
      <span class="sub"> / </span>
      <span class="${score>=0 ? "good":"bad"}">${fmt(score)}</span>`;
 
+  document.getElementById("kPoints").textContent = String(state.points);
+  document.getElementById("pillPoints").textContent = String(state.points);
+
   document.getElementById("pillStreak").textContent = `Streak: ${state.streak}`;
 
-  // Goal pill
   const g = GOALS.find(x => x.id === state.goalId);
-  const goalText = g ? g.label : "Goal: —";
-  document.getElementById("pillGoal").textContent = `Goal: ${goalText}`;
+  document.getElementById("pillGoal").textContent = `Goal: ${g ? g.label : "—"}`;
 
-  // Player pill + avatar dot
-  document.getElementById("playerLabel").textContent = state.name;
+  const title = state.cosmetics.activeTitle ? ` • ${state.cosmetics.activeTitle}` : "";
+  document.getElementById("playerLabel").textContent = state.name + title;
+
   document.getElementById("avatarDot").style.background = state.avatarColor;
   document.getElementById("brandDot").style.background = state.avatarColor;
 
   const pct = Math.round((state.round-1) / TOTAL_ROUNDS * 100);
   document.getElementById("progressBar").style.width = `${pct}%`;
+
+  const sp = document.getElementById("shopPoints");
+  if(sp) sp.textContent = `${state.points} pts`;
 }
 
 /* ====== SCREEN NAV ====== */
 let currentScreenId = "screen-intro";
+let lastNonShopScreenId = "screen-startRound";
+
 function go(screenId){
   const current = document.getElementById(currentScreenId);
   const next = document.getElementById(screenId);
   if(!current || !next) return;
+
+  if(screenId !== "screen-shop"){
+    lastNonShopScreenId = screenId;
+  }
 
   current.classList.remove("active");
   current.classList.add("left");
@@ -797,17 +947,21 @@ function go(screenId){
   next.classList.remove("left");
 
   setTimeout(() => current.classList.remove("left"), 360);
-
   currentScreenId = screenId;
 }
 
 /* ====== GAME MECHANICS ====== */
 function plannerBonus(){ return (state.level >= 2) ? 10 : 0; }
+
 function softenBadCost(amount){
+  // amount is negative
   const reduce = 0.04 * state.level;
   return Math.round(amount * (1 - reduce));
 }
-function improveInvestPct(pct){ return pct + 0.01 * state.level; }
+
+function improveInvestPct(pct){
+  return pct + 0.01 * state.level;
+}
 
 function buildBills(rng){
   const nBills = rint(rng, 2, 4);
@@ -821,6 +975,15 @@ function buildBills(rng){
   }
   const total = picked.reduce((s,x) => s + x.amount, 0);
   return { items: picked, total };
+}
+
+/* ====== POINTS ====== */
+function addPoints(n, reason){
+  const before = state.points;
+  state.points = Math.max(0, state.points + n);
+  if(n !== 0){
+    log(`Points: ${before} → ${state.points} (${n>0?"+":""}${n}) ${reason ? "| " + reason : ""}`);
+  }
 }
 
 /* ====== GOALS ====== */
@@ -839,30 +1002,148 @@ function checkGoalCompletion(){
   return false;
 }
 
+/* ====== SHOP ====== */
+function renderShop(){
+  hud();
+  const grid = document.getElementById("shopGrid");
+  grid.innerHTML = "";
+
+  SHOP_ITEMS.forEach(item => {
+    const owned = !!state.cosmetics.owned[item.id];
+    const isTheme = item.type === "theme";
+    const isTitle = item.type === "title";
+    const active =
+      (isTheme && state.cosmetics.activeTheme === item.id.replace("theme_","")) ||
+      (isTitle && state.cosmetics.activeTitle === item.name.replace("Title: ",""));
+
+    const wrap = document.createElement("div");
+    wrap.className = "shopItem";
+
+    const swatches = (item.preview?.swatches || []).map(c => `<span class="swatch" style="background:${c}"></span>`).join("");
+
+    wrap.innerHTML = `
+      <div class="shopTop">
+        <div>
+          <div class="shopName">${item.name}${owned ? " (Owned)" : ""}</div>
+          <div class="shopDesc">${item.desc}</div>
+        </div>
+        <div class="priceTag">${item.price} pts</div>
+      </div>
+
+      <div class="previewBox">
+        <div>
+          <div style="font-weight:950;">Preview: ${item.preview?.label || ""}</div>
+          <div class="sub">${isTheme ? "Changes background" : "Adds a title"}</div>
+        </div>
+        <div class="swatchRow">${swatches}</div>
+      </div>
+
+      <div class="btnRow">
+        <button class="half ${owned ? "secondary" : ""}" id="buy_${item.id}">
+          ${owned ? (active ? "Using" : "Use") : "Buy"}
+        </button>
+        <button class="secondary half" id="preview_${item.id}">
+          Preview
+        </button>
+      </div>
+    `;
+    grid.appendChild(wrap);
+
+    const buyBtn = wrap.querySelector(`#buy_${item.id}`);
+    buyBtn.disabled = (!owned && state.points < item.price);
+
+    buyBtn.onclick = () => {
+      sfxTap();
+      if(!owned){
+        if(state.points < item.price) return;
+        state.points -= item.price;
+        state.cosmetics.owned[item.id] = true;
+        log(`Shop: Bought ${item.name} (-${item.price} pts)`);
+        launchConfetti(90);
+        sfxWin();
+      }
+
+      if(isTheme){
+        const themeKey = item.id.replace("theme_","");
+        setTheme(themeKey);
+        log(`Shop: Theme set to ${item.preview?.label || themeKey}`);
+      }else if(isTitle){
+        const t = item.name.replace("Title: ","");
+        setTitle(t);
+        log(`Shop: Title set to ${t}`);
+      }
+
+      renderShop();
+      hud();
+    };
+
+    const prevBtn = wrap.querySelector(`#preview_${item.id}`);
+    prevBtn.onclick = () => {
+      sfxTap();
+      if(isTheme){
+        const themeKey = item.id.replace("theme_","");
+        setTheme(themeKey);
+        setTip(`Previewing: ${item.preview?.label || themeKey}`);
+      }else{
+        setTip(`Preview only. Buy to keep: ${item.name}`);
+      }
+      hud();
+    };
+  });
+}
+
+function resetShop(){
+  if(!confirm("Reset points and shop unlocks?")) return;
+  state.points = 0;
+  state.cosmetics.owned = {};
+  state.cosmetics.activeTheme = "default";
+  state.cosmetics.activeTitle = "";
+  setTheme("default");
+  setTitle("");
+  log("Shop reset. Points and unlocks cleared.");
+  renderShop();
+  hud();
+}
+
 /* ====== NEW GAME ====== */
 function newGame(){
   state = {
     name: "Player 1",
     avatarColor: AVATAR_COLORS[0],
+
     round: 1,
     level: 0,
     streak: 0,
+
     cash: 100,
     savings: 0,
     invest: 0,
     debt: 0,
+
     log: [],
 
     goalId: null,
-    goalCompleted: false
+    goalCompleted: false,
+
+    points: 0,
+    cosmetics: {
+      owned: {},
+      activeTheme: "default",
+      activeTitle: ""
+    },
+
+    seenSurpriseHelp: false
   };
+
   draft = null;
 
   const rng = getRoundRng(1);
   state.goalId = pickGoal(rng);
 
+  setTheme("default");
   setTip(MICRO_TIPS[0]);
-  log("New game started. You start with $100 cash.");
+
+  log("New game started. You begin with $100 in Pocket money.");
   const g = GOALS.find(x => x.id === state.goalId);
   if(g){
     log(`Goal card: ${g.label}`);
@@ -897,14 +1178,15 @@ function startRound(){
 
     beforeScore: moneyScore(),
     afterScore: null,
+
     saveBefore: null, saveAfter: null,
     invBefore: null, invAfter: null,
     invPct: 0
   };
 
   document.getElementById("paidText").innerHTML =
-    `Job: <strong>${draft.jobName}</strong><br/>Paycheck: <strong>${fmt(draft.paycheck)}</strong>` +
-    (plannerBonus() ? `<br/>Bonus (perk): <strong>+${fmt(plannerBonus())}</strong>` : "");
+    `Job: <strong>${draft.jobName}</strong><br/>You earned: <strong>${fmt(draft.paycheck)}</strong>` +
+    (plannerBonus() ? `<br/>Bonus: <strong>+${fmt(plannerBonus())}</strong>` : "");
 
   const list = document.getElementById("billList");
   list.innerHTML = "";
@@ -914,18 +1196,18 @@ function startRound(){
     div.innerHTML = `<span>${b.name}</span><strong>${fmt(b.amount)}</strong>`;
     list.appendChild(div);
   });
-  document.getElementById("billTotalTip").innerHTML =
-    `Total bills: <strong>${fmt(draft.billsTotal)}</strong>`;
+
+  document.getElementById("billTotalTip").innerHTML = `Total bills: <strong>${fmt(draft.billsTotal)}</strong>`;
 
   sfxTap();
   go("screen-paidBills");
 }
 
 function applyPlan(planKey){
-  // collect pay
+  // 1) Get paid
   state.cash += draft.paycheck + plannerBonus();
 
-  // pay bills
+  // 2) Pay bills
   const billCost = draft.billsTotal;
   if(state.cash >= billCost){
     state.cash -= billCost;
@@ -935,6 +1217,7 @@ function applyPlan(planKey){
     state.debt += gap;
   }
 
+  // 3) Split what’s left
   const available = state.cash;
 
   let saveP=0.50, invP=0.20;
@@ -952,11 +1235,15 @@ function applyPlan(planKey){
   draft.planName = (planKey === "safe" ? "Safe" : planKey === "balanced" ? "Balanced" : "Bold");
   draft.save = save; draft.invest = inv; draft.spend = spend;
 
+  // Points (simple rewards)
+  if(planKey === "safe") addPoints(3, "Picked Safe");
+  if(planKey === "balanced") addPoints(2, "Picked Balanced");
+  if(planKey === "bold") addPoints(1, "Picked Bold");
+  if(save > 0) addPoints(1, "Saved something");
+
   sfxTap();
 
   drawSurprise();
-
-  // auto-advance to surprise
   setTimeout(() => go("screen-surprise"), 220);
 }
 
@@ -965,15 +1252,19 @@ function drawSurprise(){
   draft.surprise = s;
 
   document.getElementById("surpriseChoices").style.display = "none";
-  document.getElementById("surpriseTip").textContent = "After this, we show your results.";
+  document.getElementById("surpriseTip").textContent = "Next, you’ll see your recap.";
 
   if(s.kind === "cash"){
     let impact = rint(draft.rng, s.min, s.max);
     if(impact < 0) impact = softenBadCost(impact);
-    draft.surpriseText = (impact >= 0) ? `You got ${fmt(impact)}.` : `You owe ${fmt(-impact)}.`;
+
+    draft.surpriseText = (impact >= 0)
+      ? `You gained ${fmt(impact)}.`
+      : `You lost ${fmt(-impact)}.`;
 
     if(impact >= 0){
       state.cash += impact;
+      addPoints(1, "Bonus moment");
     }else{
       const cost = -impact;
       if(state.cash >= cost){
@@ -988,19 +1279,29 @@ function drawSurprise(){
 
   if(s.kind === "market"){
     let pct = improveInvestPct(rfloat(draft.rng, s.min, s.max));
-    draft.surpriseText = `Your invest money changed by ${(pct*100).toFixed(1)}%.`;
+    draft.surpriseText = `Your Grow Money changed by ${(pct*100).toFixed(1)}%.`;
     state.invest = Math.round(state.invest * (1 + pct));
+    addPoints(1, "Stayed in the game");
   }
 
   if(s.kind === "choice"){
-    draft.surpriseText = `Do you go out for ${fmt(s.cost)}?`;
+    draft.surpriseText = `Do you want to go out for ${fmt(s.cost)}?`;
     document.getElementById("surpriseChoices").style.display = "grid";
     document.getElementById("goOutCost").textContent = `Costs ${fmt(s.cost)}`;
-    document.getElementById("surpriseTip").textContent = "Pick one. Then we move on automatically.";
+    document.getElementById("surpriseTip").textContent = "Pick one. Then we move on.";
   }
 
   document.getElementById("surpriseText").innerHTML =
     `<strong>${s.name}</strong><br/>${draft.surpriseText}`;
+
+  // First-time help
+  const help = document.getElementById("surpriseHelp");
+  if(!state.seenSurpriseHelp){
+    help.style.display = "block";
+    state.seenSurpriseHelp = true;
+  }else{
+    help.style.display = "none";
+  }
 
   hud();
 }
@@ -1019,10 +1320,11 @@ function resolveChoice(choice){
       const gap = cost - state.cash;
       state.cash = 0;
       state.debt += gap;
-      draft.choiceResult = `You went out, but you didn’t have enough cash. Debt +${fmt(gap)}.`;
+      draft.choiceResult = `You went out, but you didn’t have enough. You now owe ${fmt(gap)}.`;
     }
   }else{
     draft.choiceResult = "You stayed in. ($0)";
+    addPoints(2, "Stayed in (saved money)");
   }
 
   sfxTap();
@@ -1046,76 +1348,65 @@ function applyGrowthAndInterest(){
 }
 
 function showResults(){
-  if(draft.surprise && draft.surprise.kind === "choice" && !draft.choiceResult){
-    return;
-  }
+  if(draft.surprise && draft.surprise.kind === "choice" && !draft.choiceResult) return;
 
   applyGrowthAndInterest();
 
   const after = moneyScore();
   draft.afterScore = after;
 
-  // streak
+  // streak: “good round” = not much debt pressure
   const goodRound = (state.debt === 0) || (draft.planName !== "Bold" && state.debt < 200);
-  const prevStreak = state.streak;
   state.streak = goodRound ? state.streak + 1 : 0;
 
   const delta = after - draft.beforeScore;
-  const sign = delta >= 0 ? "+" : "-";
   const cls = delta >= 0 ? "good" : "bad";
 
   document.getElementById("resultText").innerHTML = `
-    Score change: <strong class="${cls}">${sign}${fmt(Math.abs(delta))}</strong><br/>
-    Plan: <strong>${draft.planName}</strong> | Saved <strong>${fmt(draft.save)}</strong> | Invested <strong>${fmt(draft.invest)}</strong> | Spent <strong>${fmt(draft.spend)}</strong><br/>
+    Score change: <strong class="${cls}">${delta>=0?"+":""}${fmt(delta)}</strong><br/>
+    Plan: <strong>${draft.planName}</strong><br/>
+    You saved: <strong>${fmt(draft.save)}</strong> • You grew: <strong>${fmt(draft.invest)}</strong> • You spent: <strong>${fmt(draft.spend)}</strong><br/>
     ${draft.choiceResult ? `Choice: <strong>${draft.choiceResult}</strong><br/>` : ""}
-    Savings grew: <strong>${fmt(draft.saveBefore)} → ${fmt(draft.saveAfter)}</strong><br/>
-    Invest moved: <strong>${(draft.invPct*100).toFixed(1)}%</strong> (${fmt(draft.invBefore)} → ${fmt(draft.invAfter)})
+    Save Jar grew: <strong>${fmt(draft.saveBefore)} → ${fmt(draft.saveAfter)}</strong><br/>
+    Grow Money moved: <strong>${(draft.invPct*100).toFixed(1)}%</strong> (${fmt(draft.invBefore)} → ${fmt(draft.invAfter)})
   `;
 
   const tip = draft.surprise?.tip || MICRO_TIPS[rint(draft.rng, 0, MICRO_TIPS.length - 1)];
   document.getElementById("resultTip").textContent = "Tip: " + tip;
   setTip(tip);
 
-  // ledger
+  // Ledger (simple)
   log(`\nROUND ${state.round}/${TOTAL_ROUNDS}`);
-  log(`Paid: ${draft.jobName} (+${fmt(draft.paycheck)})${plannerBonus() ? ` + bonus (+${fmt(plannerBonus())})` : ""}`);
-  log(`Bills total: -${fmt(draft.billsTotal)} | ${draft.billsItems.map(b=>`${b.name} ${fmt(b.amount)}`).join(", ")}`);
-  log(`Plan: ${draft.planName} | Save ${fmt(draft.save)} | Invest ${fmt(draft.invest)} | Spend ${fmt(draft.spend)}`);
+  log(`You earned: +${fmt(draft.paycheck)} (${draft.jobName})${plannerBonus() ? ` + Bonus ${fmt(plannerBonus())}` : ""}`);
+  log(`Bills paid: -${fmt(draft.billsTotal)}`);
+  log(`Plan: ${draft.planName} | Saved ${fmt(draft.save)} | Grew ${fmt(draft.invest)} | Spent ${fmt(draft.spend)}`);
   if(draft.surprise) log(`Surprise: ${draft.surprise.name} — ${draft.surpriseText}`);
   if(draft.choiceResult) log(`Choice: ${draft.choiceResult}`);
-  log(`Savings: ${fmt(draft.saveBefore)} → ${fmt(draft.saveAfter)}`);
-  log(`Invest: ${(draft.invPct*100).toFixed(1)}% | ${fmt(draft.invBefore)} → ${fmt(draft.invAfter)}`);
-  if(state.debt > 0) log(`Debt: ${fmt(state.debt)}`);
-  log(`Score: ${fmt(after)} | Streak: ${state.streak}`);
+  if(state.debt > 0) log(`You owe: ${fmt(state.debt)}`);
+  log(`Score now: ${fmt(after)} | Streak: ${state.streak}`);
 
-  // Streak confetti milestones
+  // points for score change
+  if(delta > 0){ addPoints(2, "Score went up"); sfxWin(); }
+  else { sfxLose(); }
+
+  // streak reward
   if(state.streak === 3 || state.streak === 5 || state.streak === 10){
+    addPoints(5, `Streak ${state.streak}`);
     launchConfetti(160);
     sfxWin();
-    log(`Streak bonus moment: ${state.streak} in a row!`);
-  } else {
-    // simple audio feedback
-    if(delta >= 0) sfxWin();
-    else sfxLose();
   }
 
-  // Goal completion check (also triggers confetti)
+  // goal complete
   const justCompletedGoal = checkGoalCompletion();
   if(justCompletedGoal){
+    addPoints(10, "Goal complete");
     launchConfetti(220);
     sfxWin();
-    const g = GOALS.find(x => x.id === state.goalId);
-    if(g){
-      log(`GOAL COMPLETE: ${g.label}`);
-    }
-    setTip("Goal complete! Keep going.");
+    setTip("Goal complete! Nice work.");
   }
 
   hud();
   go("screen-result");
-
-  // If surprise wasn't a choice, auto-advance to results after ~0.8s from showing surprise
-  // (Handled by observer below)
 }
 
 function nextRound(){
@@ -1125,8 +1416,10 @@ function nextRound(){
   if(state.round > TOTAL_ROUNDS){
     const score = moneyScore();
     document.getElementById("finishText").innerHTML =
-      `You finished <strong>${TOTAL_ROUNDS}</strong> rounds.<br/>Final Score: <strong class="${score>=0?"good":"bad"}">${fmt(score)}</strong>` +
-      `<br/><br/>Goal status: <strong>${state.goalCompleted ? "Completed" : "Not completed (try again!)"}</strong>`;
+      `You finished <strong>${TOTAL_ROUNDS}</strong> rounds.<br/>
+       Final score: <strong class="${score>=0?"good":"bad"}">${fmt(score)}</strong><br/>
+       Goal: <strong>${state.goalCompleted ? "Completed" : "Not completed (try again)"}.</strong><br/>
+       Points: <strong>${state.points}</strong>`;
     go("screen-finish");
     return;
   }
@@ -1140,15 +1433,20 @@ function levelUp(){
   if(state.level >= LEVELS.length - 1) return;
   const next = state.level + 1;
   const cost = LEVELS[next].cost;
+
   if(state.cash < cost){
-    alert(`You need ${fmt(cost)} cash to level up.`);
+    alert(`You need ${fmt(cost)} in Pocket money to level up.`);
     return;
   }
+
   state.cash -= cost;
   state.level = next;
-  log(`Leveled up: ${LEVELS[state.level].name} (-${fmt(cost)})`);
+
+  log(`Level up: ${LEVELS[state.level].name} (-${fmt(cost)})`);
   log(`Perk: ${LEVELS[state.level].perk}`);
+
   setTip(LEVELS[state.level].perk);
+  addPoints(2, "Leveled up");
   sfxTap();
   hud();
 }
@@ -1156,7 +1454,7 @@ function levelUp(){
 /* ====== SAVE/LOAD ====== */
 function saveGame(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, soundOn }));
-  log("Saved game to this browser.");
+  log("Saved on this device.");
   sfxTap();
 }
 function loadGame(){
@@ -1168,20 +1466,24 @@ function loadGame(){
     soundOn = !!parsed.soundOn;
     setSoundUI();
     draft = null;
+
+    setTheme(state.cosmetics.activeTheme || "default");
+    setTitle(state.cosmetics.activeTitle || "");
+
     hud();
     log("\nLoaded saved game.");
     go("screen-startRound");
   }catch(e){
-    alert("Could not load.");
+    alert("Could not load the save.");
   }
 }
 function resetGame(){
-  if(!confirm("Reset the game?")) return;
+  if(!confirm("Reset the whole game?")) return;
   document.getElementById("log").textContent = "";
   newGame();
 }
 
-/* ====== AVATAR SETUP ====== */
+/* ====== AVATAR PALETTE ====== */
 function buildPalette(){
   const p = document.getElementById("palette");
   p.innerHTML = "";
@@ -1217,7 +1519,6 @@ function toggleSound(){
   soundOn = !soundOn;
   setSoundUI();
   if(soundOn){
-    // on first enable, create context and play a tiny confirm beep
     ensureAudio();
     sfxTap();
   }
@@ -1233,7 +1534,7 @@ document.getElementById("btnHowNext").onclick = () => { sfxTap(); go("screen-set
 document.getElementById("btnSetupBack").onclick = () => { sfxTap(); go("screen-intro"); };
 document.getElementById("btnSetupStart").onclick = () => {
   state.name = (document.getElementById("playerName").value.trim() || "Player 1");
-  log(`Player set: ${state.name}`);
+  log(`Player name set: ${state.name}`);
   hud();
   sfxTap();
   go("screen-startRound");
@@ -1244,7 +1545,7 @@ document.getElementById("btnStartRound").onclick = () => startRound();
 document.getElementById("btnPaidContinue").onclick = () => {
   const after = Math.max(0, state.cash + draft.paycheck + plannerBonus() - draft.billsTotal);
   document.getElementById("planPreview").innerHTML =
-    `After bills, you’ll have about <strong>${fmt(after)}</strong>. Pick a plan:`;
+    `After bills, you’ll have about <strong>${fmt(after)}</strong> to split. Pick a plan:`;
   sfxTap();
   go("screen-plan");
 };
@@ -1256,7 +1557,7 @@ document.getElementById("planBold").onclick = () => applyPlan("bold");
 document.getElementById("btnGoOut").onclick = () => resolveChoice("go");
 document.getElementById("btnStayIn").onclick = () => resolveChoice("stay");
 
-// Auto-advance from surprise to results if not a choice
+/* Auto-advance from surprise to recap if there is no choice */
 const surpriseObserver = new MutationObserver(() => {
   if(!draft || !draft.surprise) return;
   if(draft.surprise.kind !== "choice"){
@@ -1282,12 +1583,25 @@ document.getElementById("soundToggle").addEventListener("keydown", (e) => {
   }
 });
 
+/* Shop navigation */
+function openShop(){
+  sfxTap();
+  renderShop();
+  go("screen-shop");
+}
+document.getElementById("btnOpenShop1").onclick = openShop;
+document.getElementById("btnOpenShop2").onclick = openShop;
+
+document.getElementById("btnShopBack").onclick = () => { sfxTap(); go(lastNonShopScreenId); };
+document.getElementById("btnShopReset").onclick = () => resetShop();
+
 /* ====== BOOT ====== */
 newGame();
 buildPalette();
 document.getElementById("screen-intro").classList.add("active");
 setSoundUI();
 hud();
+renderShop();
 </script>
 </body>
 </html>
